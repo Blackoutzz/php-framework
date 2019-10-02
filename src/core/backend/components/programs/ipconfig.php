@@ -1,7 +1,7 @@
 <?php
 namespace core\backend\programs;
 use core\backend\str;
-use core\backend\system\console_program;
+use core\backend\system\console;
 use core\backend\system\os;
 
 /**
@@ -16,7 +16,7 @@ use core\backend\system\os;
  * @website https://Blackoutzz.me
  **/
 
-class ipconfig extends console_program
+class ipconfig extends console
 {
 
     protected function on_windows()

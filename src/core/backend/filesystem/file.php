@@ -1,7 +1,7 @@
 <?php
 namespace core\backend\filesystem;
 use core\common\exception;
-use core\common\sstr;
+use core\common\str;
 
 /**
  * Static File Library.
@@ -372,7 +372,8 @@ abstract class file
                 return "";
             }
         }
-        catch (Exception $e) {
+        catch (exception $e) 
+        {
             return "";
         }
     }
@@ -398,7 +399,8 @@ abstract class file
                 return false;
             }
         }
-        catch (exception $e) {
+        catch (exception $e) 
+        {
             return false;
         }
     }
@@ -421,7 +423,8 @@ abstract class file
                 return false;
             }
         }
-        catch (Exception $e) {
+        catch (exception $e) 
+        {
             return false;
         }
     }
@@ -435,7 +438,7 @@ abstract class file
             {
                 if(file_put_contents($filepath,"") === false)
                 {
-                    throw new Exception("Permission denied to write to file {$filepath}");
+                    throw new exception("Permission denied to write to file {$filepath}");
                 }
                 touch($filepath);
                 return true;
@@ -444,7 +447,7 @@ abstract class file
                 return true;
             }
         }
-        catch (Exception $e) 
+        catch (exception $e) 
         {
             return false;
         }
@@ -585,7 +588,8 @@ abstract class file
                 return false;
             }
         }
-        catch (exception $e){
+        catch (exception $e)
+        {
             return false;
         }
     }
@@ -607,7 +611,8 @@ abstract class file
                 return "";
             }
         }
-        catch (exception $e){
+        catch (exception $e)
+        {
             return "";
         }
     }
@@ -717,7 +722,8 @@ abstract class file
         || $extension === "lua"
         || $extension === "asp"
         || $extension === "py"
-        || $extension === "css"){
+        || $extension === "css")
+        {
             return 'Script/Code';
         }
         //Picture
@@ -729,18 +735,21 @@ abstract class file
         || $extension === "jpg"
         || $extension === "svg"
         || $extension === "bpg"
-        || $extension === "exif"){
+        || $extension === "exif")
+        {
             return 'Image/Picture';
         }
         //PDF
-        if($extension === "pdf"){
+        if($extension === "pdf")
+        {
             return 'PDF/Document';
         }
         //text
         if($extension === "text"
         || $extension === "txt"
         || $extension === "md"
-        ){
+        )
+        {
             return 'Text/Note';
         }
         //compressed library
@@ -748,16 +757,19 @@ abstract class file
         || $extension === "gzip"
         || $extension === "zip"
         || $extension === "tar"
-        || $extension === "gz"){
+        || $extension === "gz")
+        {
             return 'Compressed/Files';
         }
         //Exel
         if($extension === "csv"
-        || $extension === "exel"){
+        || $extension === "exel")
+        {
             return 'Exel/CSV';
         }
         //word
-        if($extension === "word"){
+        if($extension === "word")
+        {
             return 'Word/Text';
         }
         //Video
@@ -770,7 +782,8 @@ abstract class file
         || $extension === "m4v"
         || $extension === "mpeg"
         || $extension === "mpg"
-        || $extension === "mov"){
+        || $extension === "mov")
+        {
             return 'Video/Movie';
         }
         //Audio
@@ -783,7 +796,8 @@ abstract class file
         || $extension === "au"
         || $extension === "aac"
         || $extension === "aiff"
-        || $extension === "msv"){
+        || $extension === "msv")
+        {
             return 'Music/Audio';
         }
         return 'Unkown';
@@ -802,7 +816,7 @@ abstract class file
             if(self::exist($filepath))
             {
                 $text = self::get_contents($filepath);
-                if(sstr::has_pattern($text,$pregex))
+                if(str::has_pattern($text,$pregex))
                 {
                     return true;
                 } else {
@@ -866,7 +880,8 @@ abstract class file
                 throw new exception("Unknown error by unziping the file.");
             }
         }
-        catch (Exception $e) {
+        catch (exception $e) 
+        {
             return false;
         }
 

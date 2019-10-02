@@ -1,7 +1,7 @@
 <?php
 namespace core\backend\programs;
 use core\backend\filesystem\file;
-use core\backend\system\console_program;
+use core\backend\system\console;
 
 /**
  * python short summary.
@@ -15,7 +15,7 @@ use core\backend\system\console_program;
  * @website https://Blackoutzz.me
  **/
 
-class python extends console_program
+class python extends console
 {
 
     protected $installed = false;

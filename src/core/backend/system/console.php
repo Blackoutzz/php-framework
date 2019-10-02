@@ -7,73 +7,39 @@ use core\common\exception;
  *
  * console description.
  *
- * @Version 1.0
- * @Author  mick@blackoutzz.me
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  */
 
-abstract class console
+abstract class console extends program
 {
 
-    protected $program_path;
-
-    public function __construct($pprogram_path = "")
-    {
-        if($this->execution_path != "" && is_string($this->program_path)) putenv("PATH=".$_ENV["PATH"].$this->program_path);
-    }
-
-    protected function on_windows()
-    {
-        //Overrite in your class to run this when on windows
-    }
-
-    protected function on_unix()
-    {
-        //Overrite in your class to run this when on unix / linux
-    }
-
-    protected function on_macos()
-    {
-        //Overrite in your class to run this when on mac osx
-    }
-
-}
-
-abstract class shell extends console {}
-
-abstract class console_program extends console
-{
-
-    protected $program;
-
-    protected $program_path;
-
-    //TODO : Add Macos
-    public function __construct($pprogram_path = "")
+    public function __construct($pname,$ppath = "")
     {
         if(os::is_windows())
         {
-            $this->program_path = $pprogram_path;
+            $this->path = $ppath;
             $this->on_windows();
         }
-        elseif(os::is_unix())
+        elseif(os::is_unix() || os::is_macos())
         {
-            if($this->program_path == "") $this->program_path = ":/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:";
-            else $this->program_path = $pprogram_path;
+            if($this->path == "") $this->path = ":/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:";
+            else $this->path = $ppath;
             $this->on_unix();
         }
-        parent::__construct($pprogram_path);
+        parent::__construct($pname,$ppath);
     }
 
     protected function execute($pparams = array())
     {
         try
         {
-            if(preg_match("~^ *[A-z0-9\-\_\.]+ *$~im",$this->program))
+            if(preg_match("~^ *[A-z0-9\-\_\.]+ *$~im",$this->name))
             {
-                $command = escapeshellcmd($this->program);
+                $command = escapeshellcmd($this->name);
                 $params = "";
                 if(is_array($pparams) && count($pparams) >= 1)
                 {
@@ -112,5 +78,3 @@ abstract class console_program extends console
     }
 
 }
-
-abstract class shell_program extends console_program {}

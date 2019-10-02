@@ -1,7 +1,7 @@
 <?php
 namespace core\backend\programs;
 use core\common\str;
-use core\backend\system\console_program;
+use core\backend\system\console;
 use core\backend\system\os;
 
 /**
@@ -16,7 +16,7 @@ use core\backend\system\os;
  * @Website https://Blackoutzz.me
  **/
 
-class tesseract extends console_program
+class tesseract extends console
 {
     
     protected $installed;

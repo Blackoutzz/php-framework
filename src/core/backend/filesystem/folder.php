@@ -1,5 +1,7 @@
 <?php
 namespace core\backend\filesystem;
+use core\backend\filesystem\file as static_file;
+use core\backend\components\filesystem\file;
 use core\common\exception;
 
 /**
@@ -208,7 +210,7 @@ abstract class folder
                 {
                     if($file == "." || $file == "..") continue;
                     $new_filepath = $folderpath.$file;
-                    if(is_file($new_filepath) && sfile::has_pattern($new_filepath,$pregex)) $directory["files"][$file] = new file($new_filepath);
+                    if(is_file($new_filepath) && static_file::has_pattern($new_filepath,$pregex)) $directory["files"][$file] = new file($new_filepath);
                     if(is_dir($new_filepath) && !$precursive) $directory["folders"][$file] = new folder($new_filepath);
                     if(is_dir($new_filepath) && $precursive) $directory["folders"][$file] = self::get_directory_by_pattern($new_filepath,$pregex,true);
                 }
@@ -235,7 +237,7 @@ abstract class folder
                 {
                     if($file == "." || $file == "..") continue;
                     $new_filepath = $folderpath.$file;
-                    if(is_file($new_filepath) && sfile::get_extension($new_filepath) === $pextension) $directory["files"][$file] = new file($new_filepath);
+                    if(is_file($new_filepath) && static_file::get_extension($new_filepath) === $pextension) $directory["files"][$file] = new file($new_filepath);
                     if(is_dir($new_filepath) && !$precursive) $directory["folders"][$file] = new folder($new_filepath);
                     if(is_dir($new_filepath) && $precursive) $directory["folders"][$file] = self::get_directory_by_extension($new_filepath,$pextension,true);
                 }
@@ -302,7 +304,7 @@ abstract class folder
                 {
                     if($file == "." || $file == "..") continue;
                     $new_filepath = $folderpath.$file;
-                    if(is_file($new_filepath) && sfile::has_pattern($new_filepath,$ppattern)) $directory[$file] = new file($new_filepath);
+                    if(is_file($new_filepath) && static_file::has_pattern($new_filepath,$ppattern)) $directory[$file] = new file($new_filepath);
                     if(is_dir($new_filepath) && $precursive) $directory = array_merge($directory,self::get_files_by_pattern($new_filepath,$ppattern,true));
                 }
                 return $directory;
@@ -328,7 +330,7 @@ abstract class folder
                 {
                     if($file == "." || $file == "..") continue;
                     $new_filepath = $folderpath.$file;
-                    if(is_file($new_filepath) && sfile::get_extension($new_filepath) === $pextension) $directory[$file] = new file($new_filepath);
+                    if(is_file($new_filepath) && static_file::get_extension($new_filepath) === $pextension) $directory[$file] = new file($new_filepath);
                     if(is_dir($new_filepath) && $precursive) $directory = array_merge($directory,self::get_files_by_extension($new_filepath,$pextension,true));
                 }
                 return $directory;
@@ -581,7 +583,7 @@ abstract class folder
             {
                 if(!is_file($folderpath.$pfilename))
                 {
-                    return sfile::create($folderpath.$pfilename);
+                    return static_file::create($folderpath.$pfilename);
                 }
                 return true;
             } else {
