@@ -1,6 +1,6 @@
 <?php
 namespace core\backend\components\mvc\controllers;
-use core\backend\components\controller;
+use core\backend\components\mvc\controller;
 use core\common\exception;
 use core\backend\database\mysql\model;
 use core\backend\database\mysql\datasets\user;

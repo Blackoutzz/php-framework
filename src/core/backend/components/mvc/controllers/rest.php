@@ -1,6 +1,6 @@
 <?php
 namespace core\backend\components\mvc\controllers;
-use core\backend\components\controllers\api;
+use core\backend\components\mvc\controllers\api;
 
 /**
  * Rest API Controller

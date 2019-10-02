@@ -1,8 +1,7 @@
 <?php
 namespace core\backend\components\mvc;
-use core\backend\database;
 use core\program;
-use core\backend\components\user;
+use core\backend\components\mvc\user;
 use core\backend\components\filesystem\file;
 use core\backend\components\filesystem\folder;
 

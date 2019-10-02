@@ -1,7 +1,7 @@
 <?php
 namespace core\backend\components\mvc\controllers;
 use core\backend\components\mvc\controller;
-use core\frontend\components\controller_view;
+use core\frontend\components\mvc\controller_view;
 use core\common\conversions\json;
 use core\program;
 
