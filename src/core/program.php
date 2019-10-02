@@ -2,9 +2,9 @@
 namespace core;
 use backend\filesystem\folder;
 use backend\components\databases\mysql;
-use backend\components\cryptography;
-use backend\components\routing;
-use backend\components\user;
+use backend\components\mvc\cryptography;
+use backend\components\mvc\routing;
+use backend\components\mvc\user;
 
 define("runid",uniqid());
 define('DS',DIRECTORY_SEPARATOR);
@@ -66,21 +66,21 @@ abstract class program
 
     }
 
-    static public function runtime($pruntime_type = program_runtime_type::dev) : void
+    static public function runtime($pruntime_type = runtime_type::dev) : void
     {
         ob_start();
         ini_set ("memory_limit",'1024M');
         header("X-XSS-Protection: 1");
         date_default_timezone_set('America/Montreal');
         ini_set ( "log_errors", 1 );
-        if($pruntime_type === program_runtime_type::dev)
+        if($pruntime_type === runtime_type::dev)
         {
             if(self::is_using_xdebug()) ini_set('xdebug.max_nesting_level', 30000);
             ini_set("LSAPI_MAX_PROCESS_TIME",-1);
             error_reporting(E_ERROR | E_WARNING | E_PARSE);
             ini_set ( "display_errors", 1 );
         }
-        elseif ($pruntime_type === program_runtime_type::prod)
+        elseif ($pruntime_type === runtime_type::prod)
         {
             error_reporting(0);
             ini_set ( "display_errors", 0 );
