@@ -1,10 +1,10 @@
 <?php
-namespace backend\components;
+namespace core\backend\components;
 
 define("NULL",0);
 
 /**
- *
+ * Database 
  *
  * @Version 1.0
  * @Author  mick@blackoutzz.me
