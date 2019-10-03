@@ -13,8 +13,7 @@ namespace core;
  * @Website https://Blackoutzz.me
  **/
 
-
-abstract class program_runtime_type
+abstract class runtime_type
 {
 
     const dev = 1;

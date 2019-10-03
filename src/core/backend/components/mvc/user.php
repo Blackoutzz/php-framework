@@ -17,11 +17,11 @@ use core\program;
  *
  * Default user of the application.
  *
- * @Version 1.0
- * @Author  mick@blackoutzz.me
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 class user extends dataset

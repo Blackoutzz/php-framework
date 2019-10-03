@@ -1,10 +1,10 @@
 <?php
 namespace core;
-use backend\filesystem\folder;
-use backend\components\databases\mysql;
-use backend\components\mvc\cryptography;
-use backend\components\mvc\routing;
-use backend\components\mvc\user;
+use core\backend\components\filesystem\folder;
+use core\backend\components\databases\mysql;
+use core\backend\components\mvc\cryptography;
+use core\backend\components\mvc\routing;
+use core\backend\components\mvc\user;
 
 define("runid",uniqid());
 define('DS',DIRECTORY_SEPARATOR);
