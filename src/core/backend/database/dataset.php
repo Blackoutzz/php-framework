@@ -196,9 +196,12 @@ class dataset extends model
         $object = new \stdClass();
         foreach(array_reverse(get_object_vars($this),true) as $name => $value)
         {
-            $function_name = "get_".$name;
             if(method_exists($this,"is_".$name)) $function_name = "is_".$name;
-            $value = $this->$function_name();
+            elseif(method_exists($this,"get_".$name)) $function_name = "get_".$name;
+            if(isset($function_name) && $function_name != "")
+                $value = $this->$function_name();
+            else 
+                $value = $this->$name;
             $object->$name = $this->parse_value($value,$precursive);
         }
         return $object;
