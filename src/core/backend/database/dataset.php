@@ -166,7 +166,15 @@ class dataset extends model
 
     public function __toString()
     {
-        return "";
+        foreach(array_reverse(get_object_vars($this),true) as $name => $value)
+        {
+            if($name === "name") return $value;
+        }
+        foreach(array_reverse(get_object_vars($this),true) as $name => $value)
+        {
+            if(is_string($value)) return $value;
+        }
+        return array_pop(explode("\\",__CLASS__));
     }
 
     public function __get($pname)
@@ -191,94 +199,51 @@ class dataset extends model
             $function_name = "get_".$name;
             if(method_exists($this,"is_".$name)) $function_name = "is_".$name;
             $value = $this->$function_name();
-            if(is_object($value) && $value instanceof dataset)
-            {
-                $object->$name = $value->__toStdClass($precursive);
-            } 
-            elseif(is_object($value) && $value instanceof dataset_array)
-            {
-                $object->$name = $value->__toStdClass($precursive);
-            }
-            elseif(is_array($value))
-            {
-                $object->$name = array();
-                if(count($value) >= 1)
-                {
-                    foreach($value as $subvalue)
-                    {
-                        if(is_object($value) && $value instanceof dataset)
-                        {
-                            $object->$name = $value->__toStdClass($precursive);
-                        }
-                        elseif(is_object($value) && $value instanceof dataset_array)
-                        {
-                            $object->$name = $value->__toStdClass($precursive);
-                        } 
-                        else 
-                        {
-                            if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) 
-                                $value = intval($value);
-                            $object->$name = $value;
-                        }
-                    }
-                }
-            }
-            else 
-            {
-                if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = intval($value);
-                $object->$name = $value;
-            }
+            $object->$name = $this->parse_value($value,$precursive);
         }
         return $object;
     }
 
-    public function __toJson($precursive = false)
+    protected function parse_value(&$value,$precursive)
     {
-        $object = new \stdClass();
-        foreach(array_reverse(get_object_vars($this),true) as $name => $value)
+        if(is_object($value) && $value instanceof dataset)
         {
-            $function_name = "get_".$name;
-            if(method_exists($this,"is_".$name)) $function_name = "is_".$name;
-            $value = $this->$function_name();
-            if(is_object($value) && $value instanceof dataset)
+            if($precursive)
+                return $value = $value->__toStdClass($precursive);
+            else
+                return $value = "{$value}";
+        } 
+        elseif(is_object($value) && $value instanceof dataset_array)
+        {
+            return $value = $value->__toStdClass($precursive);
+        }
+        elseif(is_array($value))
+        {
+            $new_value = array();
+            if(count($value) >= 1)
             {
-                $object->$name = $value->__toStdClass($precursive);
-            } 
-            elseif(is_object($value) && $value instanceof dataset_array)
-            {
-                $object->$name = $value->__toStdClass($precursive);
-            }
-            elseif(is_array($value))
-            {
-                $object->$name = array();
-                if(count($value) >= 1)
+                foreach($value as $key_value => $sub_value)
                 {
-                    foreach($value as $subvalue)
-                    {
-                        if(is_object($value) && $value instanceof dataset)
-                        {
-                            $object->$name = $value->__toStdClass($precursive);
-                        }
-                        elseif(is_object($value) && $value instanceof dataset_array)
-                        {
-                            $object->$name = $value->__toStdClass($precursive);
-                        } 
-                        else 
-                        {
-                            if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) 
-                                $value = intval($value);
-                            $object->$name = $value;
-                        }
-                    }
+                    $new_value[$key_value] = $this->parse_value($sub_value,$precursive);
                 }
             }
-            else 
-            {
-                if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = intval($value);
-                $object->$name = $value;
-            }
+            return $value = $new_value;
         }
-        return json_encode($object);
+        else 
+        {
+            if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value))
+                return $value = intval($value);
+            elseif(is_object($value) && "{$value}" != "")
+                return $value = "{$value}";
+            elseif(is_string($value))
+                return $value; 
+        }
+        return $value = false;
+    }
+
+    public function __toJson($precursive = false)
+    {
+        return json_encode($this->__toStdClass($precursive));
     }
 
     public function __toCSV()
@@ -382,14 +347,9 @@ class dataset extends model
         //TODO
     }
 
-    public function __toArray()
+    public function __toArray($precursive = false)
     {
-        $array = array();
-        foreach(array_reverse(get_object_vars($this),true) as $name => $value)
-        {
-            $array[$name] = $value;
-        }
-        return $array;
+        return json_decode(json_encode($this->__toStdClass($precursive)),true);
     }
 
     protected function get_variables()
@@ -399,7 +359,6 @@ class dataset extends model
         if(isset($table_variables["name"]) && $table_variables["name"] != NULL) $variables["name"] = $table_variables["name"];
         foreach($table_variables as $variable_name => $variable_value)
         {
-            //Base Check
             if($variable_name != "id" || $variable_name != "table_name" || $variable_name != "name")
             {
                 $variables[$variable_name] = $variable_value;

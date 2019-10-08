@@ -225,27 +225,19 @@ class dataset_array implements \Iterator , \ArrayAccess, \Countable
         return $new_array;
     }
 
-    public function __toJson($precursive = false)
+    public function __toStdClass($precursive = false)
     {
-        $object = new \stdClass();
-        foreach(array_reverse(get_object_vars($this),true) as $name => $value)
+        $object = array();
+        foreach($this->array as $value)
         {
-            if($name != "table_name")
-            {
-                $function_name = "get_".$name;
-                if(method_exists($this,"is_".$name)) $function_name = "is_".$name;
-                $value = $this->$function_name();
-                if(is_object($value) && $value instanceof dataset)
-                {
-                    if($precursive) $object->$name = $value->__toJson($precursive);
-                    else $object->$name = "{$value}";
-                } else {
-                    if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = intval($value);
-                    $object->$name = $value;
-                }
-            }
+            $object[] = $this->parse_value($value,$precursive);
         }
         return $object;
+    }
+
+    public function __toJson($precursive = false)
+    {
+        return json_encode($this->__toStdClass($precursive));
     }
 
     public function __toCSV()
@@ -310,14 +302,46 @@ class dataset_array implements \Iterator , \ArrayAccess, \Countable
         //TODO
     }
 
-    public function __toArray()
+    public function __toArray($precursive = false)
     {
-        $array = array();
-        foreach(array_reverse(get_object_vars($this),true) as $name => $value)
+        return json_decode(json_encode($this->__toStdClass($precursive)),true);
+    }
+
+    protected function parse_value(&$value,$precursive)
+    {
+        if(is_object($value) && $value instanceof dataset)
         {
-            $array[$name] = $value;
+            if($precursive)
+                return $value = $value->__toStdClass($precursive);
+            else
+                return $value = "{$value}";
+        } 
+        elseif(is_object($value) && $value instanceof dataset_array)
+        {
+            return $value = $value->__toStdClass($precursive);
         }
-        return $array;
+        elseif(is_array($value))
+        {
+            $new_value = array();
+            if(count($value) >= 1)
+            {
+                foreach($value as $key_value => $sub_value)
+                {
+                    $new_value[$key_value] = $this->parse_value($sub_value,$precursive);
+                }
+            }
+            return $value = $new_value;
+        }
+        else 
+        {
+            if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value))
+                return $value = intval($value);
+            elseif(is_object($value) && "{$value}" != "")
+                return $value = "{$value}";
+            elseif(is_string($value))
+                return $value; 
+        }
+        return $value = false;
     }
 
     public function get_variables()
