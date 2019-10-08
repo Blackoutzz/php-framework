@@ -1,6 +1,18 @@
 <?php
 namespace core\backend\system;
 
+/**
+ * Program
+ *
+ * base class/wrapper for shell program in your existing cmdline
+ *
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
+ */
+
 abstract class program
 {
 

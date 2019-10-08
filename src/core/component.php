@@ -2,7 +2,7 @@
 namespace core;
 use core\common\regex;
 use core\common\components\str;
-
+use core\backend\components\database;
 /**
  * Core Component
  *
@@ -33,9 +33,9 @@ abstract class component
         return program::$database;
     }
 
-    protected function get_database_model()
+    protected function has_database()
     {
-        //TODO
+        return (program::$database instanceof database);
     }
 
     protected function get_controller_view()
@@ -95,6 +95,16 @@ abstract class component
     protected function get_namespace()
     {
         return __NAMESPACE__;
+    }
+
+    protected function push()
+    {
+        program::push();
+    }
+
+    protected function pull()
+    {
+        return program::pull();
     }
 
 }

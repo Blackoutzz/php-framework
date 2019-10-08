@@ -1,5 +1,5 @@
 <?php
-namespace core\frontend\components;
+namespace core\frontend\components\mvc;
 use core\frontend\components\template;
 use core\backend\components\file;
 use core\common\exception;
@@ -219,16 +219,6 @@ class controller_view extends template
         {
             return false;
         }
-    }
-
-    protected function push()
-    {
-        program::push();
-    }
-
-    protected function pull()
-    {
-        return program::pull();
     }
 
 }

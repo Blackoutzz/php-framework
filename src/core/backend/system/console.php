@@ -66,7 +66,9 @@ abstract class console extends program
                         }
                     }
                 }
-                return shell_exec($command." {$params} 2>&1");
+                $output = shell_exec($command." {$params} 2>&1");
+                //tput protection
+                return preg_replace('~(tput: No value for \$TERM and no \-T specified\n)~',"",$output);
             }
             throw new exception("bad input to execute bash command");
         } 

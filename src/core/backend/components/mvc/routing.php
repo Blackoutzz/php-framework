@@ -19,15 +19,13 @@ use core\common\exception;
  * 
  * @version 1.0
  * @author  mick@blackoutzz.me
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 class routing
 {
-
-    protected $routes;
 
     protected $request;
 
@@ -44,6 +42,8 @@ class routing
         $this->routes = array();
         $this->request = new request();
         $this->parameters = array();
+        $folder = new folder("controllers");
+        $folder->import(true);
         $this->parse_request();
     }
 
@@ -59,128 +59,155 @@ class routing
 
     protected function parse_request()
     {
-        $parameter_id = 0;
-        $parameters = $this->request->get_parameters();
-        if(isset($parameters[$parameter_id]) && $parameters[$parameter_id] != "")
-        {
-            if($this->get_controller_from_parameter($parameters[$parameter_id])) $parameter_id++;
-            if($this->get_view_from_parameter($parameters[$parameter_id])) $parameter_id++;
-            $this->set_controller_view();
-            $view_parameters = array();
-            while(isset($this->parameters[$parameter_id]))
-            {
-                $view_parameters[] = $this->parameters[$parameter_id];
-                $parameter_id++;
-            }
-            $this->parameters = $view_parameters;
-        }
-    }
-
-    protected function set_controller_from_parameter($pparameter)
-    {
-        $parameter = strtolower($pparameter);
-        if($this->has_database())
-        {
-            $database = $this->get_database();
-            if($this->controller = $database->get_controller_by_name($parameter))
-                return true;
-            $this->controller =  new controller(array("id"=>1,"name"=>"root"));
-            return false;
-        } else {
-            $type = $this->request->get_type();
-            $controller_folder = new folder('controllers/'.$type.'/',false);
-            if($controller_folder->exist())
-            {
-                foreach($controller_folder->get_files_by_extension("php") as $file)
-                {
-                    if($file->get_name() === $parameter && $parameter != "install")
-                    {
-                        $this->controller = new controller(array("id"=>0,"name"=>$parameter));
-                        return true;
-                    } 
-                }
-            }
-            $this->controller =  new controller(array("id"=>1,"name"=>"root"));
-            return false;
-        }
-    }
-    
-    protected function set_view_from_parameter($pparameter)
-    {
-        $parameter = strtolower($pparameter);
-        if($this->has_database())
-        {
-            $database = $this->get_database();
-            if($this->view = $database->get_view_by_name($parameter)) return true;
-            $this->view =  new view(array("id"=>1,"name"=>"root"));
-            return false;
-        } else {
-            $type = $this->request->get_type();
-            $controller_folder = new folder('controllers/'.$type.'/',false);
-            if($controller_folder->exist())
-            {
-                foreach($controller_folder->get_files_by_extension("php") as $file)
-                {
-                    if($file->get_name() === $parameter && $parameter != "install")
-                    {
-                        $this->controller = new controller(array("id"=>0,"name"=>$parameter));
-                        if(!class_exists("controllers\\{$type}\\{$parameter}"))
-                            $file->import();
-                        return true;
-                    } 
-                }
-            }
-            $this->controller =  new controller(array("id"=>1,"name"=>"root"));
-            return false;
-        }
-    }
-
-    protected function set_controller_view()
-    {
         try
         {
-            if($this->has_database())
+            $parameter_id = 0;
+            $parameters = $this->request->get_parameters();
+            if(count($parameters))
             {
-                $database = $this->get_database();
-                if($this->controller_view = $database->get_controller_view_by_controller_and_view($this->controller,$this->view))
+                if(isset($parameters[$parameter_id]) && $parameters[$parameter_id] != "")
+                {
+                    if($this->has_database())
+                    {
+                        $database = $this->get_database();
+                        if($database->has_connection())
+                        {
+                            if($database->get_connection()->is_connected())
+                            {
+                                $database = $this->get_database();
+                                if($this->controller = $database->get_model()->get_controller_by_name($parameters[$parameter_id]))
+                                {
+                                    $parameter_id++;
+                                    if($this->view = $database->get_view_by_name($parameters[$parameter_id]))
+                                    {
+                                        $parameter_id++;
+                                        if($this->controller_view = $database->get_model()->get_controller_view_by_controller_and_view($this->controller,$this->view))
+                                        {
+                                            $view_parameters = array();
+                                            while(isset($this->parameters[$parameter_id]))
+                                            {
+                                                $view_parameters[] = $this->parameters[$parameter_id];
+                                                $parameter_id++;
+                                            }
+                                            $this->parameters = $view_parameters;
+                                            return true;
+                                        } else {
+                                           throw new exception("Invalid controller view",404);
+                                        }
+                                    } else {
+                                        throw new exception("Invalid view",404);
+                                    }
+                                } else {
+                                    throw new exception("Invalid controller",404);
+                                }
+                            } else {
+                                throw new exception("Database not available",503);
+                            }
+                        } else {
+                            //Not setup
+                            throw new exception("Database not installed",503);
+                        }
+                    } else {
+                        //Static route
+                        $namespace = $this->parse_controller_namespace($parameters[$parameter_id]);
+                        if(class_exists($namespace))
+                        {
+                            $this->controller = new controller(array("id"=>0,"name"=>$this->parse_controller_name($parameters[$parameter_id])));
+                            $parameter_id++;
+                            $controller = new $namespace();
+                            if($controller->has_view($parameters[$parameter_id]))
+                            {
+                                $this->view = new view(array("id"=>0,"name"=>$this->parse_view_name($parameters[$parameter_id])));
+                                $parameter_id++;
+                                $this->controller_view = new controller_view(array("id"=>0,"controller"=>0,"view"=>0));
+                                $view_parameters = array();
+                                while(isset($this->parameters[$parameter_id]))
+                                {
+                                    $view_parameters[] = $this->parameters[$parameter_id];
+                                    $parameter_id++;
+                                }
+                                $this->parameters = $view_parameters;
+                                return true;
+                            } else {
+                               throw new exception("Invalid view",404);
+                            }
+                        } else {
+                            throw new exception("Invalid controller",404);
+                        }
+                    }
+                } else {
+                    $this->controller = new controller(array("id"=>1,"name"=>"root"));
+                    if(program::$user->is_connected())
+                    {
+                        $this->view = new view(array("id"=>2,"name"=>"dashboard"));
+                        $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
+                    } else {
+                        $this->view = new view(array("id"=>1,"name"=>"index"));
+                        $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
+                    }
                     return true;
-                throw new exception("404 - Page not found.");
-            } 
-            else 
-            {
-                throw new exception("404 - Page not found.");
+                }
+            } else {
+                $this->controller = new controller(array("id"=>1,"name"=>"root"));
+                if(program::$user->is_connected())
+                {
+                    $this->view = new view(array("id"=>2,"name"=>"dashboard"));
+                    $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
+                } else {
+                    $this->view = new view(array("id"=>1,"name"=>"index"));
+                    $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
+                }
+                return true;
             }
         } 
         catch (exception $e)
         {
-            $this->on_default_controller_view();
+            $this->controller =  new controller(array("id"=>1,"name"=>"root"));
+            $this->view = new view(array("id"=>0,"name"=>"error"));
+            $this->controller_view = new controller_view(array("id"=>0,"controller"=>1,"view"=>0));
+            $this->parameters = array($e->get_code(),$e->get_message());
             return false;
         }
-        
     }
 
-    public function on_default_controller_view()
+    protected function parse_controller_name(&$pcontroller)
     {
-        $this->controller = new controller(array("id"=>1,"name"=>"root"));
-        if(program::$user->is_connected()){
-            $this->view = new view(array("id"=>2,"name"=>"dashboard"));
-            $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
-        } else {
-            $this->view = new view(array("id"=>1,"name"=>"index"));
-            $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
-        }
-    }
-
-    public function on_default_view()
-    {
-        if(program::$user->is_connected())
+        try
         {
-            $this->view = new view(array("id"=>2,"name"=>"dashboard"));
-        } else {
-            $this->view = new view(array("id"=>1,"name"=>"index"));
+            if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',trim(strtolower($pcontroller)),$controller))
+            {
+                $pcontroller = $controller[1];
+                return $pcontroller;
+            }
+            throw new exception("Invalid controller name");
+        } 
+        catch (exception $e)
+        {
+            $pcontroller = "root";
+            return $pcontroller;
         }
     }
-    
+
+    protected function parse_controller_namespace(&$pcontroller)
+    {
+        $type = $this->request->get_type();
+        $controller = preg_replace('~(-)~','_',$this->parse_controller_name($pcontroller));
+        $pcontroller = "controllers\\{$type}\\{$controller}";
+        return $pcontroller;
+    }
+
+    protected function parse_view_name(&$pview)
+    {
+        return $pview = trim(strtolower($pview));
+    }
+
+    public function get_controller_instance()
+    {
+        $name = $this->controller->get_name();
+        $controller = $this->parse_controller_namespace($name);
+        return new $controller();
+    }
+
     public function get_url()
     {
         return str::sanitize($_SERVER["REQUEST_SCHEME"]."://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]);

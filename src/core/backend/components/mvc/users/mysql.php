@@ -1,5 +1,6 @@
 <?php
-namespace core\backend\components\mvc;
+namespace core\backend\components\mvc\users;
+use core\backend\components\mvc\user;
 use core\backend\database\dataset;
 use core\backend\database\mysql\model;
 use core\backend\database\mysql\datasets\user_action;
@@ -24,7 +25,7 @@ use core\program;
  * @website https://Blackoutzz.me
  **/
 
-class user extends dataset
+class mysql extends user
 {
 
     protected $id = 0;
@@ -168,25 +169,17 @@ class user extends dataset
     public function do_action($paction)
     {
         $action = 0;
-        try
-        {
-            if(model::is_action($paction))
-            {
+        try{
+            if(model::is_action($paction)){
                 $action = $paction->get_id();
-            } 
-            elseif (is_string($paction))
-            {
+            } elseif (is_string($paction)){
                 $actions = model::get_actions_by_name($paction);
-                if(count($actions) >= 1)
-                {
+                if(count($actions) >= 1){
                     $action = $actions[0]->get_id();
                 }
-            } 
-            elseif (is_int($paction) || is_integer($paction))
-            {
+            } elseif (is_int($paction) || is_integer($paction)){
                 $actions = model::get_actions_by_id($paction);
-                if(count($actions) >= 1)
-                {
+                if(count($actions) >= 1){
                     $action = $actions[0]->get_id();
                 }
             }
@@ -234,7 +227,6 @@ class user extends dataset
 
     public function has_access()
     {
-        return true;
         try
         {
             $controller_view = program::$routing->get_controller_view();
@@ -311,9 +303,19 @@ class user extends dataset
 
 	}
 
-    public function logoff()
+	public function show_picture($Params = "")
     {
+        if(isset($this->email) && $this->email != "" && $this->name != "")
+        {
+			$ident = $this->email;
+			$grav_url = "https://secure.gravatar.com/avatar/".md5($ident).".png";
+			echo'<img src="'.$grav_url.'" alt="'.$this->name.'" '.$Params.' />';
+		}
+	}
 
+    public function get_gravatar()
+    {
+        return "https://secure.gravatar.com/avatar/".md5($this->email).".png";
     }
 
     public function is_banned()

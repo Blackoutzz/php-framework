@@ -1,6 +1,6 @@
 <?php
 namespace core\backend\components\mvc;
-use core\program;
+use core\component;
 use core\backend\components\mvc\user;
 use core\backend\components\filesystem\file;
 use core\backend\components\filesystem\folder;
@@ -30,19 +30,8 @@ class cache extends component
         $this->required = false;
     }
 
-    protected function push()
-    {
-        program::push();
-    }
-
-    protected function pull()
-    {
-        return program::pull();
-    }
-
     public function save_view()
     {
-
         $cache_folder = "./";
         if($this->reference === "core" || $this->reference === "app")
         {

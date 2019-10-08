@@ -8,11 +8,11 @@ use core\common\str;
  *
  * Utility to get server information
  *
- * @Version 1.0
- * @Author  Mickael Nadeau
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 class server 

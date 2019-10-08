@@ -1,8 +1,8 @@
 <?php
 namespace core\common\conversions;
 use core\exception;
-use core\mvc\table_model;
-use core\mvc\table_model_array;
+use core\backend\database\dataset;
+use core\backend\database\dataset_array;
 
 /**
  * Object Conversion : CSV
@@ -19,11 +19,11 @@ class csv
 
     public static function encode($pvar)
     {
-        if((is_array($pvar) || $pvar instanceof table_model_array) && count($pvar) >= 1)
+        if((is_array($pvar) || $pvar instanceof dataset_array) && count($pvar) >= 1)
         {
             foreach($pvar as $var)
             {
-                if($var instanceof table_model)
+                if($var instanceof dataset)
                 {
                     $header = "";
                     $csv = "";
@@ -50,7 +50,7 @@ class csv
 
         } elseif(is_object($pvar)) 
         {
-            if($pvar instanceof table_model)
+            if($pvar instanceof dataset)
             {
                 $header = "";
                 $csv = "";

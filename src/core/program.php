@@ -98,8 +98,8 @@ abstract class program
 
         self::$cryptography = new cryptography();
         self::$user = new user();
-        self::$routing = new routing();
         self::$database = new mysql();
+        self::$routing = new routing();
     }
 
     static public function push() : void

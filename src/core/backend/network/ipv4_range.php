@@ -18,7 +18,7 @@ class ipv4_range
 
     protected $max = "0.0.0.0";
 
-    protected $mask = "24";
+    protected $netmask = "24";
 
     public function __construct($prange)
     {
@@ -29,6 +29,16 @@ class ipv4_range
             $this->min = $match[1];
             $this->max = $match[2];
         }
+    }
+
+    public function __toString()
+    {
+        return $this->min."-".$this->max;
+    }
+
+    public function is_valid()
+    {
+        return ($this->min != "0.0.0.0" && $this->max != "0.0.0.0");
     }
 
     public function is_in_range($pip)

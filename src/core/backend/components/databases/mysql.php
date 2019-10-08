@@ -25,8 +25,11 @@ class mysql extends database
 
     public function __construct($pconfig = array())
     {
-        $this->connection = new connection($pconfig["host"],$pconfig["port"],$pconfig["username"],$pconfig["password"],$pconfig["db"]);
-        $this->model = new model($this->connection);
+        if(isset($pconfig["host"]) && isset($pconfig["port"]) && isset($pconfig["username"]) && isset($pconfig["password"]) && isset($pconfig["db"]))
+        {
+            $this->connection = new connection($pconfig["host"],$pconfig["port"],$pconfig["username"],$pconfig["password"],$pconfig["db"]);
+            $this->model = new model($this->connection);
+        }
     }
 
     public function get_model()

@@ -1,23 +1,24 @@
 <?php
 namespace core\backend\components\mvc;
 use core\program;
-use core\backend\components\user;
+use core\backend\components\mvc\user;
 use core\backend\database\mysql\model;
 use core\component;
 use core\common\str;
 use core\common\exception;
-use core\backend\components\cache;
+use core\backend\components\mvc\cache;
+use core\frontend\components\mvc\controller_view;
 
 /**
  * Controller
  * 
  * Application base controller for MVC
  * 
- * @Version 1.0
- * @Author  Mickael Nadeau
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 abstract class controller extends component
@@ -38,7 +39,7 @@ abstract class controller extends component
 
     public function __toString()
     {
-        return $this->get_controller_name();
+        return array_pop(explode('\\',__CLASS__));
     }
 
     public function has_access()
@@ -48,7 +49,7 @@ abstract class controller extends component
             if(isset(program::$user) && program::$user instanceof user)
             {
                 if(program::$user->has_access()) return true;
-                throw new exception("Access denied to access on ".$this->get_controller_name()."/".$this->get_view_name()." by ".program::$user);
+                throw new exception("Access denied to access view");
             } else {
                 return true;
             }
@@ -60,15 +61,26 @@ abstract class controller extends component
         }
     }
 
-    public function has_view()
+    public function has_view($pview = false)
     {
         try
         {
-            if(!method_exists($this,str_replace("-","_",$this->get_view_name())))
+            if(!$pview) 
+                $view = $this->get_view_name();
+            else
+                $view = trim(strtolower(str_replace("-","_",$pview)));
+            if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',$view))
             {
-                throw new exception("No view configured inside controller '".$this->get_controller_name()."'.");
+                if(method_exists('core\\backend\\components\\mvc\\controller',$view)) 
+                    throw new exception("Reserved view name");
+                if(method_exists($this,$view))
+                {
+                    return true;
+                } else {
+                    throw new exception("No view configured inside controller");
+                }
             } else {
-                return true;
+                throw new exception("Invalid view name");
             }
         }
         catch (exception $e)
@@ -129,6 +141,11 @@ abstract class controller extends component
         {
             return false;
         }
+    }
+
+    protected function create_view()
+    {
+        return new controller_view($this->reference,$this->cache,$this->view_data);
     }
 
     public function initialize()
