@@ -188,19 +188,45 @@ class dataset extends model
         $object = new \stdClass();
         foreach(array_reverse(get_object_vars($this),true) as $name => $value)
         {
-            if($name != "table_name")
+            $function_name = "get_".$name;
+            if(method_exists($this,"is_".$name)) $function_name = "is_".$name;
+            $value = $this->$function_name();
+            if(is_object($value) && $value instanceof dataset)
             {
-                $function_name = "get_".$name;
-                if(method_exists($this,"is_".$name)) $function_name = "is_".$name;
-                $value = $this->$function_name();
-                if(is_object($value) && $value instanceof dataset)
+                $object->$name = $value->__toStdClass($precursive);
+            } 
+            elseif(is_object($value) && $value instanceof dataset_array)
+            {
+                $object->$name = $value->__toStdClass($precursive);
+            }
+            elseif(is_array($value))
+            {
+                $object->$name = array();
+                if(count($value) >= 1)
                 {
-                    if($precursive) $object->$name = $value->__toStdClass($precursive);
-                    else $object->$name = "{$value}";
-                } else {
-                    if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = intval($value);
-                    $object->$name = $value;
+                    foreach($value as $subvalue)
+                    {
+                        if(is_object($value) && $value instanceof dataset)
+                        {
+                            $object->$name = $value->__toStdClass($precursive);
+                        }
+                        elseif(is_object($value) && $value instanceof dataset_array)
+                        {
+                            $object->$name = $value->__toStdClass($precursive);
+                        } 
+                        else 
+                        {
+                            if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) 
+                                $value = intval($value);
+                            $object->$name = $value;
+                        }
+                    }
                 }
+            }
+            else 
+            {
+                if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = intval($value);
+                $object->$name = $value;
             }
         }
         return $object;
@@ -211,19 +237,45 @@ class dataset extends model
         $object = new \stdClass();
         foreach(array_reverse(get_object_vars($this),true) as $name => $value)
         {
-            if($name != "table_name")
+            $function_name = "get_".$name;
+            if(method_exists($this,"is_".$name)) $function_name = "is_".$name;
+            $value = $this->$function_name();
+            if(is_object($value) && $value instanceof dataset)
             {
-                $function_name = "get_".$name;
-                if(method_exists($this,"is_".$name)) $function_name = "is_".$name;
-                $value = $this->$function_name();
-                if(is_object($value) && $value && $value instanceof dataset)
+                $object->$name = $value->__toStdClass($precursive);
+            } 
+            elseif(is_object($value) && $value instanceof dataset_array)
+            {
+                $object->$name = $value->__toStdClass($precursive);
+            }
+            elseif(is_array($value))
+            {
+                $object->$name = array();
+                if(count($value) >= 1)
                 {
-                    if($precursive) $object->$name = $value->__toStdClass($precursive);
-                    else $object->$name = "{$value}";
-                } else {
-                    if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = intval($value);
-                    $object->$name = $value;
+                    foreach($value as $subvalue)
+                    {
+                        if(is_object($value) && $value instanceof dataset)
+                        {
+                            $object->$name = $value->__toStdClass($precursive);
+                        }
+                        elseif(is_object($value) && $value instanceof dataset_array)
+                        {
+                            $object->$name = $value->__toStdClass($precursive);
+                        } 
+                        else 
+                        {
+                            if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) 
+                                $value = intval($value);
+                            $object->$name = $value;
+                        }
+                    }
                 }
+            }
+            else 
+            {
+                if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = intval($value);
+                $object->$name = $value;
             }
         }
         return json_encode($object);
@@ -237,17 +289,14 @@ class dataset extends model
             $function_name = "get_".$name;
             if(method_exists($this,$function_name)) $value = $this->$function_name();
             $value = str_replace("\"","\"\"",$value);
-            if($name != "table_name")
-            {
-                if(is_string($value)) $value = str_replace("\n","&#xD;",str_replace("\r","&#xA;",$value));
-                if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = "".intval($value);
-                if(is_bool($value) && $value === true) $value = "true";
-                if(is_bool($value) && $value === false) $value = "false";
-                if($csv == ""){
-                    $csv .= "\"{$value}\"";
-                } else {
-                    $csv .= ",\"{$value}\"";
-                }
+            if(is_string($value)) $value = str_replace("\n","&#xD;",str_replace("\r","&#xA;",$value));
+            if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = "".intval($value);
+            if(is_bool($value) && $value === true) $value = "true";
+            if(is_bool($value) && $value === false) $value = "false";
+            if($csv == ""){
+                $csv .= "\"{$value}\"";
+            } else {
+                $csv .= ",\"{$value}\"";
             }
         }
         return $csv;
@@ -260,35 +309,34 @@ class dataset extends model
         {
             foreach(array_reverse(get_object_vars($this),true) as $name => $value)
             {
-                if($name != "table_name")
+                $function_name = "get_".$name;
+                if(method_exists($this,$function_name)) $value = $this->$function_name();
+                if(is_object($value) && $value instanceof dataset)
                 {
-                    $function_name = "get_".$name;
-                    if(method_exists($this,$function_name)) $value = $this->$function_name();
-                    if(is_object($value) && $value instanceof dataset)
+                    if($precursive)
                     {
-                        if($precursive)
+                        $sub_xml = explode(CRLF,$value->__toXML(true));
+                        foreach($sub_xml as &$inner_xml)
                         {
-                            $sub_xml = explode(CRLF,$value->__toXML(true));
-                            foreach($sub_xml as &$inner_xml)
-                            {
-                                $inner_xml = "\t".$inner_xml;
-                            }
-                            $xml .= implode(CRLF,$sub_xml).CRLF;
-                            continue;
-                        } else {
-                            $value = str_replace("\n","&#xD;",str_replace("\r","&#xA;",$value));
-                            $xml .= "\t<{$name}>{$value}</{$name}>".CRLF;
-                            continue;
+                            $inner_xml = "\t".$inner_xml;
                         }
+                        $xml .= implode(CRLF,$sub_xml).CRLF;
+                        continue;
                     } else {
-                        if(is_string($value)) $value = str_replace("\n","&#xD;",str_replace("\r","&#xA;",$value));
-                        if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = "".intval($value);
-                        if(is_bool($value) && $value === true) $value = "true";
-                        if(is_bool($value) && $value === false) $value = "false";
+                        $value = str_replace("\n","&#xD;",str_replace("\r","&#xA;",$value));
                         $xml .= "\t<{$name}>{$value}</{$name}>".CRLF;
                         continue;
                     }
-                }
+                } 
+                else 
+                {
+                    if(is_string($value)) $value = str_replace("\n","&#xD;",str_replace("\r","&#xA;",$value));
+                    if(is_int($value) || is_float($value) || is_numeric($value) || is_integer($value)) $value = "".intval($value);
+                    if(is_bool($value) && $value === true) $value = "true";
+                    if(is_bool($value) && $value === false) $value = "false";
+                    $xml .= "\t<{$name}>{$value}</{$name}>".CRLF;
+                    continue;
+                }  
             }
         } else {
             foreach(array_reverse(get_object_vars($this),true) as $name => $value)
