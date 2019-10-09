@@ -20,7 +20,8 @@ class menu_button extends dataset
 
     public function save()
     {
-        if($this->exist()){
+        if($this->exist())
+        {
             return $this->update_prepared_request("UPDATE `menu_buttons` SET name=?,category=?,controller_view=? WHERE id=?","siii",array($this->name,$this->category,$this->controller_view,$this->id));
         } else {
             if($this->insert_prepared_request("INSERT INTO `menu_buttons` (`name`,`controller_view`,`category`) values (?,?,?)","sii",array($this->name,$this->controller_view,$this->category)))

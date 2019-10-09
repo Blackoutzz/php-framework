@@ -1,7 +1,7 @@
 <?php
-namespace core\backend\database\json\datasets;
-use core\backend\database\dataset;
-use core\backend\database\model;
+namespace core\backend\database\mysql\datasets;
+use core\backend\database\mysql\dataset;
+use core\backend\database\mysql\model;
 
 class user_group_permission extends dataset
 {
@@ -16,6 +16,21 @@ class user_group_permission extends dataset
     {
         $this->table_name = "user_group_permissions";
         $this->parse_data($pdata);
+    }
+
+    public function save()
+    {
+        if($this->exist())
+        {
+            return $this->update_request("UPDATE `user_group_permissions` SET user_group=? , permission=? , granted=? WHERE id=?","iiii",array($this->user_group,$this->permission,$this->granted,$this->id));
+        } else {
+            if($this->insert_prepared_request("INSERT INTO `user_group_permissions` (`user_group`,`permission`,`granted`) VALUES (?,?,?)","iii",array($this->user_group,$this->permission,$this->granted)))
+            {
+                $this->id = $this->get_last_id();
+                return true;
+            }
+            return false;
+        }
     }
 
     public function get_user_group()

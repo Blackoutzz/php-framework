@@ -1,8 +1,8 @@
 <?php
-namespace core\backend\database\json\datasets;
-use core\backend\database\dataset;
-use core\backend\database\model;
-use core\common\time\date;
+namespace core\backend\database\mysql\datasets;
+use core\backend\database\mysql\dataset;
+use core\backend\database\mysql\model;
+use core\common\components\time\date;
 
 class user_action extends dataset
 {
@@ -19,6 +19,21 @@ class user_action extends dataset
     {
         $this->table_name = "user_actions";
         $this->parse_data($pdata);
+    }
+
+    public  function save()
+    {
+        if($this->exist())
+        {
+            return $this->update_prepared_request("UPDATE `user_actions` SET user=? , action=? , ip=? WHERE id=?","iiisi",array($this->user,$this->action,$this->ip,$this->id));
+        } else {
+            if($this->insert_prepared_request("INSERT INTO `user_actions` (`user`,`action`,`ip`) VALUES (?,?,?)","iis",array($this->user,$this->action,$this->ip)))
+            {
+                $this->id = $this->get_last_id();
+                return true;
+            }
+            return false;
+        }
     }
 
     public  function __toString()

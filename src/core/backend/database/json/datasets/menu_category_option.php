@@ -14,12 +14,6 @@ class menu_category_option extends dataset
         $this->table_name = "menu_category_options";
         $this->parse_data($pdata);
     }
-
-    public function __construct($pdata)
-    {
-        $this->table_name = "menu_category_options";
-        $this->parse_data($pdata);
-    }
     
     public function get_option()
     {

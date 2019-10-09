@@ -2,7 +2,7 @@
 namespace core\backend\database\json\datasets;
 use core\backend\database\dataset;
 use core\backend\database\model;
-use core\common\time\date;
+use core\common\components\time\date;
 
 class user_action extends dataset
 {
@@ -24,21 +24,6 @@ class user_action extends dataset
     public  function __toString()
     {
         return $this->get_user()->get_name()." has ".$this->get_action()->get_name()." from ".$this->ip." ".$this->get_date()->get_elasped_time();
-    }
-
-    public  function save()
-    {
-        if($this->exist())
-        {
-            return $this->update_prepared_request("UPDATE `user_actions` SET user=? , action=? , ip=? WHERE id=?","iiisi",array($this->user,$this->action,$this->ip,$this->id));
-        } else {
-            if($this->insert_prepared_request("INSERT INTO `user_actions` (`user`,`action`,`ip`) VALUES (?,?,?)","iis",array($this->user,$this->action,$this->ip)))
-            {
-                $this->id = $this->get_last_id();
-                return true;
-            }
-            return false;
-        }
     }
 
     public  function get_user()

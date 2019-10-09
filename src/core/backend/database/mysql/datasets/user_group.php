@@ -1,7 +1,7 @@
 <?php
-namespace core\backend\database\json\datasets;
-use core\backend\database\dataset;
-use core\backend\database\model;
+namespace core\backend\database\mysql\datasets;
+use core\backend\database\mysql\dataset;
+use core\backend\database\mysql\model;
 
 class user_group extends dataset
 {
