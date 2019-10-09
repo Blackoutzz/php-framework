@@ -3,10 +3,10 @@ namespace core\backend\database\json\datasets;
 use core\backend\database\dataset;
 use core\backend\database\model;
 
-class user_group_controller_view extends dataset
+class permission_controller_view extends dataset
 {
 
-    protected $user_group = NULL;
+    protected $permission = NULL;
 
     protected $controller_view = NULL;
 
@@ -14,40 +14,35 @@ class user_group_controller_view extends dataset
 
     public function __construct($pdata)
     {
-        $this->table_name = "user_group_controller_views";
+        $this->table_name = "permission_controller_views";
         $this->parse_data($pdata);
     }
 
-    public  function get_user_group()
+    public function get_permission()
     {
-        return model::get_user_group_by_id($this->user_group);
+        return model::get_permission_by_id($this->permission);
     }
 
-    public  function set_user_group($puser_group)
+    public function set_permission($ppermission)
     {
-        if(is_object($puser_group) && model::is_user_group($puser_group))
+        if(model::is_permission($ppermission))
         {
-            $this->user_group = $puser_group->get_id();
+            $this->permission = $ppermission->get_id();
             return true;
         }
-        if($puser_group != NULL && is_integer($puser_group))
+        if($ppermission != NULL && is_integer($ppermission))
         {
-            $new_user_group = model::get_user_group_by_id($puser_group);
-            if($new_user_group != NULL && model::is_user_group($new_user_group))
+            $new_permission = model::get_user_group_by_id($ppermission);
+            if($new_permission != NULL && model::is_permission($new_permission))
             {
-                $this->user_group = $new_user_group->get_id();
+                $this->permission = $new_permission->get_id();
                 return true;
             }
         }
         return false;
     }
 
-    public  function get_controller_view()
-    {
-        return model::get_controller_view_by_id($this->controller_view);
-    }
-
-    public  function set_controller_view($pcontroller_view)
+    public function set_controller_view($pcontroller_view)
     {
         if(model::is_controller_view($pcontroller_view))
         {
@@ -63,16 +58,15 @@ class user_group_controller_view extends dataset
         return false;
     }
 
+    public  function get_controller_view()
+    {
+        return model::get_controller_view_by_id($this->controller_view);
+    }
+
     public  function set_granted($pbool)
     {
-        if($pbool >= 1 || $pbool === true)
-        {
-            $this->granted = 1;
-        }
-        if($pbool === 0 || $pbool === false)
-        {
-            $this->granted = 0;
-        }
+        if($pbool >= 1 || $pbool === true) $this->granted = 1;
+        if($pbool === 0 || $pbool === false) $this->granted = 0;
     }
 
     public  function get_granted()
@@ -81,4 +75,3 @@ class user_group_controller_view extends dataset
     }
 
 }
-

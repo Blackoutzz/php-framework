@@ -1,6 +1,6 @@
 <?php
-namespace core\backend\database\mysql\datasets;
-use core\backend\database\mysql\dataset;
+namespace core\backend\database\json\datasets;
+use core\backend\database\dataset;
 
 class plugin extends dataset
 {
@@ -17,6 +17,21 @@ class plugin extends dataset
     {
         $this->table_name = "plugins";
         $this->parse_data($pdata);
+    }
+
+    public function save()
+    {
+        if($this->exist())
+        {
+            return $this->update_prepared_request("UPDATE `plugins` SET name=? , slug=? , version=? , enabled=? WHERE id=?","sssii",array($this->name,$this->slug,$this->version,$this->enabled,$this->id));
+        } else {
+            if($this->insert_prepared_request("INSERT INTO `plugins` (`name`,`slug`,`version`,`enabled`) values (?,?,?,?)","sssi",array($this->name,$this->slug,$this->version,$this->enabled)))
+            {
+                $this->id = $this->get_last_id();
+                return true;
+            }
+            return false;
+        }
     }
 
     public function get_name()

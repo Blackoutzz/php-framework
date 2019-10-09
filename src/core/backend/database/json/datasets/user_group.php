@@ -14,21 +14,6 @@ class user_group extends dataset
         $this->parse_data($pdata);
     }
 
-    public function save()
-    {
-        if($this->exist())
-        {
-            return $this->update_prepared_request("UPDATE `user_groups` SET name=? WHERE id=?","si",array($this->name,$this->id));
-        } else {
-            if($this->insert_prepared_request("INSERT INTO `user_groups` (`name`) VALUES (?)","s",array($this->name)))
-            {
-                $this->id = $this->get_last_id();
-                return true;
-            }
-            return false;
-        }
-    }
-
     public function get_name()
     {
         return $this->name;

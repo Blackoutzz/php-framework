@@ -18,6 +18,21 @@ class user_controller_view extends dataset
         $this->parse_data($pdata);
     }
 
+    public  function save()
+    {
+        if($this->exist())
+        {
+            return $this->update_prepared_request("UPDATE `user_controller_views` SET user=? , controller_view=? , granted=? WHERE id=?","iiii",array($this->user,$this->controller_view,$this->granted,$this->id));
+        } else {
+            if($this->insert_prepared_request("INSERT INTO `user_controller_views` (`user`,`controller_view`,`granted`) VALUES (?,?,?)","iii",array($this->user,$this->controller_view,$this->granted)))
+            {
+                $this->id = $this->get_last_id();
+                return true;
+            }
+            return false;
+        }
+    }
+
     public  function get_user()
     {
         return model::get_user_by_id($this->user);

@@ -3,10 +3,10 @@ namespace core\backend\database\json\datasets;
 use core\backend\database\dataset;
 use core\backend\database\model;
 
-class user_group_option extends dataset
+class user_option extends dataset
 {
 
-    protected $user_group = NULL;
+    protected $user = NULL;
 
     protected $option = NULL;
 
@@ -14,32 +14,13 @@ class user_group_option extends dataset
 
     public  function __construct($pdata)
     {
-        $this->table_name = "user_group_options";
+        $this->table_name = "user_options";
         $this->parse_data($pdata);
     }
 
-    public  function get_user_group()
+    public function __toString()
     {
-        return model::get_user_group_by_id($this->user_group);
-    }
-
-    public  function set_user_group($puser_group)
-    {
-        if(is_object($puser_group) && model::is_user_group($puser_group))
-        {
-            $this->user_group = $puser_group->get_id();
-            return true;
-        }
-        if($puser_group != NULL && is_integer($puser_group))
-        {
-            $new_user_group = model::get_user_groups_by_id($puser_group)[0];
-            if($new_user_group != NULL && model::is_user_group($new_user_group))
-            {
-                $this->user_group = $new_user_group->get_id();
-                return true;
-            }
-        }
-        return false;
+        return (string) $this->value;
     }
 
     public  function get_option()
@@ -74,6 +55,30 @@ class user_group_option extends dataset
     public  function set_value($pvalue)
     {
         $this->value = $pvalue;
+    }
+
+    public  function get_user()
+    {
+        return model::get_users_by_id($this->user);
+    }
+
+    public  function set_user($puser)
+    {
+        if(model::is_user($puser))
+        {
+            $this->user = $puser->get_id();
+            return true;
+        }
+        if($puser != NULL && is_integer($puser))
+        {
+            $new_user = model::get_users_by_id($puser)[0];
+            if($new_user != NULL && model::is_user($new_user))
+            {
+                $this->user = $new_user->get_id();
+                return true;
+            }
+        }
+        return false;
     }
 
 }

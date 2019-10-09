@@ -3,16 +3,17 @@ namespace core;
 use core\common\regex;
 use core\common\components\str;
 use core\backend\components\database;
+
 /**
  * Core Component
  *
  * Extends program to component
  *
- * @Version 1.0
- * @Author  mick@blackoutzz.me
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  mick@blackoutzz.me
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 abstract class component

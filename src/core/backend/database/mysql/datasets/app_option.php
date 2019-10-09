@@ -29,4 +29,15 @@ class app_options extends dataset
             return false;
         }
     }
+
+    public function get_option()
+    {
+        return $this->option;
+    }
+
+    public function get_value()
+    {
+        return $this->value;
+    }
+    
 }

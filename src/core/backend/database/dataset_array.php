@@ -225,19 +225,19 @@ class dataset_array implements \Iterator , \ArrayAccess, \Countable
         return $new_array;
     }
 
-    public function __toStdClass($precursive = false)
+    public function __toStdClass()
     {
         $object = array();
         foreach($this->array as $value)
         {
-            $object[] = $this->parse_value($value,$precursive);
+            $object[] = $this->parse_value($value);
         }
         return $object;
     }
 
-    public function __toJson($precursive = false)
+    public function __toJson()
     {
-        return json_encode($this->__toStdClass($precursive));
+        return json_encode($this->__toStdClass());
     }
 
     public function __toCSV()
@@ -302,23 +302,20 @@ class dataset_array implements \Iterator , \ArrayAccess, \Countable
         //TODO
     }
 
-    public function __toArray($precursive = false)
+    public function __toArray()
     {
-        return json_decode(json_encode($this->__toStdClass($precursive)),true);
+        return json_decode(json_encode($this->__toStdClass()),true);
     }
 
-    protected function parse_value(&$value,$precursive)
+    protected function parse_value(&$value)
     {
         if(is_object($value) && $value instanceof dataset)
         {
-            if($precursive)
-                return $value = $value->__toStdClass($precursive);
-            else
-                return $value = "{$value}";
+            return $value = $value->__toStdClass();
         } 
         elseif(is_object($value) && $value instanceof dataset_array)
         {
-            return $value = $value->__toStdClass($precursive);
+            return $value = $value->__toStdClass();
         }
         elseif(is_array($value))
         {
@@ -327,7 +324,7 @@ class dataset_array implements \Iterator , \ArrayAccess, \Countable
             {
                 foreach($value as $key_value => $sub_value)
                 {
-                    $new_value[$key_value] = $this->parse_value($sub_value,$precursive);
+                    $new_value[$key_value] = $this->parse_value($sub_value);
                 }
             }
             return $value = $new_value;
@@ -340,6 +337,8 @@ class dataset_array implements \Iterator , \ArrayAccess, \Countable
                 return $value = "{$value}";
             elseif(is_string($value))
                 return $value; 
+            elseif(is_bool($value))
+                return $value;
         }
         return $value = false;
     }

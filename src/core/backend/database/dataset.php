@@ -191,7 +191,7 @@ class dataset extends model
         return NULL;
     }
 
-    public function __toStdClass($precursive = false)
+    public function __toStdClass()
     {
         $object = new \stdClass();
         foreach(array_reverse(get_object_vars($this),true) as $name => $value)
@@ -202,23 +202,20 @@ class dataset extends model
                 $value = $this->$function_name();
             else 
                 $value = $this->$name;
-            $object->$name = $this->parse_value($value,$precursive);
+            $object->$name = $this->parse_value($value);
         }
         return $object;
     }
 
-    protected function parse_value(&$value,$precursive)
+    protected function parse_value(&$value)
     {
         if(is_object($value) && $value instanceof dataset)
         {
-            if($precursive)
-                return $value = $value->__toStdClass($precursive);
-            else
-                return $value = "{$value}";
+            return $value = $value->__toStdClass();
         } 
         elseif(is_object($value) && $value instanceof dataset_array)
         {
-            return $value = $value->__toStdClass($precursive);
+            return $value = $value->__toStdClass();
         }
         elseif(is_array($value))
         {
@@ -227,7 +224,7 @@ class dataset extends model
             {
                 foreach($value as $key_value => $sub_value)
                 {
-                    $new_value[$key_value] = $this->parse_value($sub_value,$precursive);
+                    $new_value[$key_value] = $this->parse_value($sub_value);
                 }
             }
             return $value = $new_value;
@@ -240,13 +237,15 @@ class dataset extends model
                 return $value = "{$value}";
             elseif(is_string($value))
                 return $value; 
+            elseif(is_bool($value))
+                return $value;
         }
         return $value = false;
     }
 
-    public function __toJson($precursive = false)
+    public function __toJson()
     {
-        return json_encode($this->__toStdClass($precursive));
+        return json_encode($this->__toStdClass());
     }
 
     public function __toCSV()
@@ -350,9 +349,9 @@ class dataset extends model
         //TODO
     }
 
-    public function __toArray($precursive = false)
+    public function __toArray()
     {
-        return json_decode(json_encode($this->__toStdClass($precursive)),true);
+        return json_decode(json_encode($this->__toStdClass()),true);
     }
 
     protected function get_variables()
