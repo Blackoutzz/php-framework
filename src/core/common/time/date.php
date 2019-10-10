@@ -1,17 +1,18 @@
 <?php
 namespace core\common\time;
 use core\common\exception;
+use core\common\components\time\date as date_object;
 
 /**
  * Static Date Library.
  *
  * This act as the backbone of the Object Date Library and can be used directly.
  *
- * @Version 1.0
- * @Author  mick@blackoutzz.me
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  mick@blackoutzz.me
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 abstract class date
@@ -86,16 +87,16 @@ abstract class date
         if($pnew_time === "now"){
             $new_time = time();
         } else {
-            if($pnew_time instanceof date){
+            if($pnew_time instanceof date_object){
                 $new_time = $pnew_time->get_timestamp();
             } else {
-                $new_time = sdate::parse_time($pnew_time);
+                $new_time = self::parse_time($pnew_time);
             }
         }
-        if($pold_time instanceof date){
+        if($pold_time instanceof date_object){
             $old_time = $pold_time->get_timestamp();
         } else {
-            $old_time = sdate::parse_time($pold_time);
+            $old_time = self::parse_time($pold_time);
         }
 
         if(isset($old_time) && isset($new_time)){
@@ -163,8 +164,10 @@ abstract class date
 
     }
 
-    static public function get_elapsed_time($ptime = false){
-        try{
+    static public function get_elapsed_time($ptime = false)
+    {
+        try
+        {
             if($ptime === false) $ptime = time();
             $seconds = intval(time() - $ptime);
             if($seconds === 0) return "now";
@@ -227,7 +230,8 @@ abstract class date
                 if($seconds <   self::seconds_per_minute) return "{$seconds} seconds ago";
             }
         }
-        catch (exception $e){
+        catch (exception $e)
+        {
             return false;
         }
     }

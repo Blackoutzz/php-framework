@@ -1,16 +1,17 @@
 <?php
 namespace core\common\components;
+use core\common\time\date as static_date;
 
 /**
  * Object Date.
  *
  * This class contains everything included with the static date library.
  *
- * @Version 1.0
- * @Author  Mickael Nadeau
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 class date
@@ -20,10 +21,10 @@ class date
 
     protected $timestamp;
 
-    public function __construct($ptime = false,$pdisplay = sdate::mysql)
+    public function __construct($ptime = false,$pdisplay = static_date::mysql)
     {
         $this->display = $pdisplay;
-        $this->timestamp = sdate::parse_time($ptime);
+        $this->timestamp = static_date::parse_time($ptime);
     }
 
     public function __toString()
@@ -48,12 +49,12 @@ class date
 
     public function is_older_then($pnew_time)
     {
-        return sdate::is_older_then($this,$pnew_time);
+        return static_date::is_older_then($this,$pnew_time);
     }
 
     public function is_newer_then($pnew_time)
     {
-        if(!sdate::is_older_then($this,$pnew_time)) return true;
+        if(!static_date::is_older_then($this,$pnew_time)) return true;
         return false;
     }
 
@@ -118,10 +119,16 @@ class date
         return false;
     }
 
-    public function was_last_month()
+    public function was_last_year()
     {
-
+        if($this->get_year() == (date("Y")-1));
     }
+
+    public function was_within_years_ago($pyears = 5)
+    {
+        return ($this->get_year() >= (date("Y")-intval($pyears)));
+    }
+
 
     public function get_yesterday_timestamp()
     {
@@ -181,7 +188,7 @@ class date
 
     public function get_elasped_time()
     {
-        return sdate::get_elapsed_time($this->timestamp);
+        return static_date::get_elapsed_time($this->timestamp);
     }
 
     public function is_weekend()
