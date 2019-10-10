@@ -1,5 +1,5 @@
 <?php
-namespace core\common\components;
+namespace core\common\components\time;
 use core\common\time\date as static_date;
 
 /**
