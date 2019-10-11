@@ -129,8 +129,34 @@ class routing
                                 $this->parameters = $view_parameters;
                                 return true;
                             } else {
-                               throw new exception("Invalid view",404);
+                                if(program::$user->is_connected() && $controller->has_view("dashboard"))
+                                {       
+                                    $this->view = new view(array("id"=>2,"name"=>"dashboard"));
+                                    $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
+                                    $view_parameters = array();
+                                    while(isset($this->parameters[$parameter_id]))
+                                    {
+                                        $view_parameters[] = $this->parameters[$parameter_id];
+                                        $parameter_id++;
+                                    }
+                                    $this->parameters = $view_parameters;
+                                    return true;
+                                } 
+                                elseif($controller->has_view("index"))
+                                {
+                                    $this->view = new view(array("id"=>1,"name"=>"index"));
+                                    $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
+                                    $view_parameters = array();
+                                    while(isset($this->parameters[$parameter_id]))
+                                    {
+                                        $view_parameters[] = $this->parameters[$parameter_id];
+                                        $parameter_id++;
+                                    }
+                                    $this->parameters = $view_parameters;
+                                    return true;
+                                }
                             }
+                            throw new exception("Invalid view",404);
                         } else {
                             throw new exception("Invalid controller",404);
                         }

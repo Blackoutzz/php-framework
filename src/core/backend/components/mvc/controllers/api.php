@@ -28,14 +28,13 @@ class api extends controller
         {
             $data = $this->prepare_view();
             $recursive = false;
-            if(isset($_REQUEST["depth"])) $recursive = true;
             if(isset($_REQUEST["output"]))
             {
                 $output = strtolower($_REQUEST["output"]);
                 if($output === "xml")
                 {
                     header("Content-Type: text/xml");
-                    die(xml::encode($data,$recursive));
+                    die(xml::encode($data));
                 }
                 if($output === "csv")
                 {
@@ -44,12 +43,13 @@ class api extends controller
                 }
             }
             header("Content-Type: text/json");
-            die(json::encode($data,$recursive));
+            die(json::encode($data,true));
         }
     }
 
     protected function on_requirement_failed()
     {
+        http_response_code(403);
         die(json_encode(array("code"=>403,"message"=>"Permission denied to access the API.")));
     }
 

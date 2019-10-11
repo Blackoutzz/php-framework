@@ -2,7 +2,7 @@
 namespace core\backend\components;
 use core\common\exception;
 use core\backend\components\curl;
-use core\backend\components\data;
+use core\backend\database\dataset;
 use core\backend\network\curl\request_result;
 
 /**
@@ -31,6 +31,7 @@ class api extends curl
         $this->curl = new curl();
     }
 
+    //Get
     protected function send_get_request($ppath,$pheaders = array(),$pcookies = array())
     {
         try
@@ -42,7 +43,7 @@ class api extends curl
             {
                 if($result->is_successful())
                 {
-                    return new data(json_decode($result->get_body()));
+                    return new dataset(json_decode($result->get_body()));
                 }
             }
             throw new exception("Api request failed.");
@@ -53,6 +54,7 @@ class api extends curl
         
     }
 
+    //Add
     protected function send_post_request($ppath,$pheaders = array(),$pcookies = array(),$pdata = array())
     {
         try
@@ -64,7 +66,7 @@ class api extends curl
             {
                 if($result->is_successful())
                 {
-                    return new data(json_decode($result->get_body()));
+                    return new dataset(json_decode($result->get_body()));
                 }
             }
             throw new exception("Api request failed.");
@@ -75,18 +77,19 @@ class api extends curl
         
     }
 
+    //Delete
     protected function send_delete_request($ppath,$pheaders = array(),$pcookies = array())
     {
         try
         {
             $request = $this->curl->create_delete_request($this->url.$ppath,$pheaders,$pcookies);
-            $request->set_user_agent("Blackoutzz@web.framework - API");
+            $request->set_user_agent("blackoutzz/framework - API");
             $result = $request->send();
             if($result instanceof request_result)
             {
                 if($result->is_successful())
                 {
-                    return new data(json_decode($result->get_body()));
+                    return new dataset(json_decode($result->get_body()));
                 }
             }
             throw new exception("Api request failed.");
@@ -97,6 +100,7 @@ class api extends curl
         
     }
 
+    //Update
     protected function send_put_request($ppath,$pheaders = array(),$pcookies = array(),$pdata = array())
     {
         try
@@ -108,7 +112,7 @@ class api extends curl
             {
                 if($result->is_successful())
                 {
-                    return new data(json_decode($result->get_body()));
+                    return new dataset(json_decode($result->get_body()));
                 }
             }
             throw new exception("Api request failed.");
