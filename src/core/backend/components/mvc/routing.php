@@ -163,10 +163,16 @@ class routing
                     }
                 } else {
                     $this->controller = new controller(array("id"=>1,"name"=>"root"));
-                    if(program::$user->is_connected())
+                    if(program::$user instanceof user)
                     {
-                        $this->view = new view(array("id"=>2,"name"=>"dashboard"));
-                        $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
+                        if(program::$user->is_connected())
+                        {
+                            $this->view = new view(array("id"=>2,"name"=>"dashboard"));
+                            $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
+                        } else {
+                            $this->view = new view(array("id"=>1,"name"=>"index"));
+                            $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
+                        }
                     } else {
                         $this->view = new view(array("id"=>1,"name"=>"index"));
                         $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
@@ -175,10 +181,16 @@ class routing
                 }
             } else {
                 $this->controller = new controller(array("id"=>1,"name"=>"root"));
-                if(program::$user->is_connected())
+                if(program::$user instanceof user)
                 {
-                    $this->view = new view(array("id"=>2,"name"=>"dashboard"));
-                    $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
+                    if(program::$user->is_connected())
+                    {
+                        $this->view = new view(array("id"=>2,"name"=>"dashboard"));
+                        $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
+                    } else {
+                        $this->view = new view(array("id"=>1,"name"=>"index"));
+                        $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
+                    }
                 } else {
                     $this->view = new view(array("id"=>1,"name"=>"index"));
                     $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
@@ -196,7 +208,7 @@ class routing
         }
     }
 
-    protected function parse_controller_name(&$pcontroller)
+    protected function parse_controller_name($pcontroller)
     {
         try
         {
@@ -214,7 +226,7 @@ class routing
         }
     }
 
-    protected function parse_controller_namespace(&$pcontroller)
+    protected function parse_controller_namespace($pcontroller)
     {
         $type = $this->request->get_type();
         $controller = preg_replace('~(-)~','_',$this->parse_controller_name($pcontroller));
@@ -222,9 +234,19 @@ class routing
         return $pcontroller;
     }
 
-    protected function parse_view_name(&$pview)
+    protected function parse_view_name($pview)
     {
-        return $pview = trim(strtolower($pview));
+        if($view = trim(strtolower($pview)))
+        {
+            return $view;
+        } else {
+            if(program::$user instanceof user)
+            {
+                if(program::$user->is_connected())
+                    return "dashboard";
+            }
+            return "index";
+        }
     }
 
     public function get_controller_instance()

@@ -67,21 +67,10 @@ abstract class controller extends component
         {
             if(!$pview)
             {
-                if(program::$user instanceof user)
-                {
-                    if(program::$user->is_connected())
-                    {       
-                        if(method_exists($this,"dashboard"))
-                        {
-                            return true;
-                        }
-                    }
-                }
-                if(method_exists($this,"index"))
-                {
+                if(!$this->on_default_view())
+                    throw new exception("Invalid view name");
+                else 
                     return true;
-                }
-                throw new exception("Invalid view name");
             }
             else
             {
@@ -394,6 +383,25 @@ abstract class controller extends component
     protected function on_initialize()
     {
         //Override this to execute custom code.
+    }
+
+    protected function on_default_view()
+    {
+        if(program::$user instanceof user)
+        {
+            if(program::$user->is_connected())
+            {       
+                if(method_exists($this,"dashboard"))
+                {
+                    return "dashboard";
+                }
+            }
+        }
+        if(method_exists($this,"index"))
+        {
+            return "index";
+        }
+        return false;
     }
 
     protected function on_group_requirement_failed()
