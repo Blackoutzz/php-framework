@@ -65,22 +65,40 @@ abstract class controller extends component
     {
         try
         {
-            if(!$pview) 
-                $view = $this->get_view_name();
-            else
-                $view = trim(strtolower(str_replace("-","_",$pview)));
-            if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',$view))
+            if(!$pview)
             {
-                if(method_exists('core\\backend\\components\\mvc\\controller',$view)) 
-                    throw new exception("Reserved view name");
-                if(method_exists($this,$view))
+                if(program::$user instanceof user)
+                {
+                    if(program::$user->is_connected())
+                    {       
+                        if(method_exists($this,"dashboard"))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                if(method_exists($this,"index"))
                 {
                     return true;
-                } else {
-                    throw new exception("No view configured inside controller");
                 }
-            } else {
                 throw new exception("Invalid view name");
+            }
+            else
+            {
+                $view = trim(strtolower(str_replace("-","_",$pview)));
+                if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',$view))
+                {
+                    if(method_exists('core\\backend\\components\\mvc\\controller',$view)) 
+                        throw new exception("Reserved view name");
+                    if(method_exists($this,$view))
+                    {
+                        return true;
+                    } else {
+                        throw new exception("No view configured inside controller");
+                    }
+                } else {
+                    throw new exception("Invalid view name");
+                }
             }
         }
         catch (exception $e)
