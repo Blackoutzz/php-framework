@@ -24,7 +24,7 @@ class api extends controller
 
     public function initialize()
     {
-        if($this->has_view())
+        if($this->has_view($this->get_view_name()))
         {
             $data = $this->prepare_view();
             $recursive = false;
@@ -45,6 +45,7 @@ class api extends controller
             header("Content-Type: text/json");
             die(json::encode($data,true));
         }
+        die(json_encode(array("msg"=>"Invalid view","code"=>404)));
     }
 
     protected function on_requirement_failed()

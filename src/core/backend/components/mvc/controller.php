@@ -50,10 +50,8 @@ abstract class controller extends component
             {
                 if(program::$user->has_access()) return true;
                 throw new exception("Access denied to access view");
-            } else {
-                return true;
             }
-
+            return true;
         } catch (exception $e)
         {
             $this->on_access_failed();
@@ -313,7 +311,7 @@ abstract class controller extends component
     {
         try
         {
-            if($this->has_view())
+            if($this->has_view($this->get_view_name()))
             {
                 $ref = new \ReflectionMethod($this,str_replace("-","_",$this->get_view_name()));
                 return count($ref->getParameters());
