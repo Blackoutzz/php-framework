@@ -228,9 +228,9 @@ class dataset_array implements \Iterator , \ArrayAccess, \Countable
     public function __toStdClass()
     {
         $object = array();
-        foreach($this->array as $value)
+        foreach($this->array as $key => $value)
         {
-            $object[] = $this->parse_value($value);
+            $object[$key] = $this->parse_value($value);
         }
         return $object;
     }
