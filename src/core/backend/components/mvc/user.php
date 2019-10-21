@@ -97,9 +97,9 @@ class user extends dataset
                     $ip = $_SERVER["REMOTE_ADDR"];
                     if($ipv4_regex->match($ip) || $ipv6_regex->match($ip)) return $ip;
                 }
-                throw new Exception("Invalid IP received from client.");
+                throw new exception("Invalid IP received from client");
             }
-            throw new exception("No IP received from client.");
+            throw new exception("No IP received from client");
         } 
         catch (exception $e)
         {
@@ -313,7 +313,7 @@ class user extends dataset
 
     public function logoff()
     {
-
+        $_SESSION = array();
     }
 
     public function is_banned()

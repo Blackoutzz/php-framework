@@ -172,7 +172,6 @@ abstract class program
         if(isset($pargv["setup"])) self::$configured = $pargv["setup"];
         if(isset($pargv["database"])) self::$database = new mysql($pargv["database"]);
         if(isset($pargv["salt"]) && isset($pargv["algo"])) self::$cryptography = new cryptography(array("algo"=>$pargv["algo"],"salt"=>$pargv["salt"]));
-        
     }
 
 }

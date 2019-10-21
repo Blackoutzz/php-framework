@@ -28,4 +28,11 @@ class page extends controller
         }
     }
 
+    public function error($pcode,$pmessage)
+    {
+        $this->send($pmessage,"msg");
+        $this->send($pcode,"code");
+        http_response_code(404);
+    }
+
 }

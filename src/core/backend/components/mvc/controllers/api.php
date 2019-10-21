@@ -4,9 +4,8 @@ use core\backend\components\mvc\controller;
 use core\common\exception;
 use core\backend\database\mysql\model;
 use core\backend\database\mysql\datasets\user;
-use core\common\conversions\json;
-use core\common\conversions\csv;
-use core\common\conversions\xml;
+use core\backend\database\dataset;
+use core\backend\database\dataset_array;
 
 /**
  * API Controller.
@@ -20,32 +19,185 @@ use core\common\conversions\xml;
 
 class api extends controller
 {
+
     protected $connected = false;
 
     public function initialize()
     {
-        if($this->has_view($this->get_view_name()))
+        try
         {
-            $data = $this->prepare_view();
-            $recursive = false;
-            if(isset($_REQUEST["output"]))
+            if($this->has_view())
             {
-                $output = strtolower($_REQUEST["output"]);
-                if($output === "xml")
+                if($data = $this->prepare_view())
                 {
-                    header("Content-Type: text/xml");
-                    die(xml::encode($data));
+                    if(isset($_REQUEST["format"]))
+                    {
+                        $format = strtolower($_REQUEST["format"]);
+                        switch($format)
+                        {
+                            case 'csv':
+                                $this->on_csv_output($data);
+                                break;
+                            case 'xml':
+                                $this->on_xml_output($data);
+                                break;
+                            case 'json':
+                                $this->on_json_output($data);
+                                break;
+                            default:
+                                $this->on_json_output($data);
+                        }
+                    } else {
+                        $this->on_json_output($data);
+                    }
+                } else {
+                    throw new exception("Api returned no data",503);
+                } 
+            } else {
+                throw new exception("Invalid api path",404);
+            }
+        } 
+        catch (exception $e)
+        {
+            $data = array("msg"=>$e->get_message(),"code"=>$e->get_code());
+            if(isset($_REQUEST["format"]))
+            {
+                $format = strtolower($_REQUEST["format"]);
+                switch($format)
+                {
+                    case 'csv':
+                        $this->on_csv_output($data);
+                        break;
+                    case 'xml':
+                        $this->on_xml_output($data);
+                        break;
+                    case 'json':
+                        $this->on_json_output($data);
+                        break;
+                    default:
+                        $this->on_json_output($data);
                 }
-                if($output === "csv")
+            } else {
+                $this->on_json_output($data);
+            }
+        }
+    }
+
+    protected function has_view()
+    {
+        try
+        {
+            
+            $view = trim(strtolower(str_replace("-","_",$this->get_view_name())));
+            if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',$view))
+            {
+                if(method_exists('core\\backend\\components\\mvc\\controllers\\api',$view)) 
+                    throw new exception("Reserved view name");
+                if(method_exists($this,$view))
                 {
-                    header("Content-Type: text/csv");
-                    die(csv::encode($data));
+                    return true;
+                } else {
+                    throw new exception("No view configured inside controller");
+                }
+            } else {
+                throw new exception("Invalid view name");
+            }
+        }
+        catch (exception $e)
+        {
+            return false;
+        }
+    }
+
+    protected function on_json_output($pdata)
+    {
+        try
+        {
+            header("Content-Type: text/json");
+            if($pdata instanceof dataset)
+            {
+                print($pdata->__toJson());
+            } 
+            elseif($pdata instanceof dataset_array)
+            {
+                print($pdata->__toJson());
+            }
+            else
+            {
+                if($pdata)
+                {
+                    if(is_string($pdata) || is_integer($pdata) || is_bool($pdata)) $data = array($pdata); 
+                    elseif (is_array($pdata)) $data = $pdata;
+                    if(isset($data))
+                    {
+                        print(json_encode($data));
+                    } else {
+                        
+                        throw new exception("Invalid output data",503);
+                    }
+                } else {
+                    
+                    throw new exception("Invalid format data",503);
                 }
             }
-            header("Content-Type: text/json");
-            die(json::encode($data,true));
         }
-        die(json_encode(array("msg"=>"Invalid view","code"=>404)));
+        catch(exception $e)
+        {
+            $data = array("msg"=>$e->get_message(),"code"=>$e->get_code());
+            print(json_encode($data));
+        }
+    }
+
+    protected function on_xml_output($pdata)
+    {
+        try
+        {
+            header("Content-Type: text/xml");
+            if($pdata instanceof dataset)
+            {
+                print($pdata->__toXML());
+            } 
+            elseif($pdata instanceof dataset_array)
+            {
+                print($pdata->__toXML());
+            }
+            else
+            {
+                throw new exception("Invalid data format",503);
+            }
+        }
+        catch(exception $e)
+        {
+            $data = array("msg"=>$e->get_message(),"code"=>$e->get_code());
+            print(json_encode($data));
+        }
+    }
+
+    protected function on_csv_output($pdata)
+    {
+        try
+        {
+            header("Content-Type: text/csv");
+            if($pdata instanceof dataset)
+            {
+                print($pdata->__toCSV());
+            } 
+            elseif($pdata instanceof dataset_array)
+            {
+                print($pdata->__toCSV());
+            } 
+            else 
+            {
+                throw new exception("Invalid data format",503);
+            }
+            
+        }
+        catch(exception $e)
+        {
+            $data = array("msg"=>$e->get_message(),"code"=>$e->get_code());
+            print(json_encode($data));
+        }
+        
     }
 
     protected function on_requirement_failed()
@@ -102,79 +254,6 @@ class api extends controller
             }
         }
         return new user(array("id"=>0,"name"=>"Visitor","user_group"=>2));
-    }
-
-    protected function require_permission($ppermission)
-    {
-        try
-        {
-            $user = $this->get_user();
-            if(is_array($ppermission))
-            {
-                foreach($ppermission as $permission)
-                {
-                    if($user->can($permission)) return true;
-
-                }
-                throw new exception("Required permissions missing for {$user}");
-            } else {
-                if($user->can($ppermission)) return true;
-                throw new exception("{$ppermission} permission required missing for {$user}");
-            }
-        }
-        catch(exception $e)
-        {
-            $this->on_permission_requirement_failed();
-            return false;
-        }
-    }
-
-    protected function require_permissions($ppermission)
-    {
-        try
-        {
-            $user = $this->get_user();
-            if(is_array($ppermission))
-            {
-                foreach($ppermission as $permission)
-                {
-                    if($user->can($permission)) continue;
-                    throw new exception("Required permission missing for {$user}");
-                }
-                return true;
-            } else {
-                if($user->can($ppermission)) return true;
-                throw new exception("Permission Required missing for {$user}");
-            }
-        }
-        catch(exception $e)
-        {
-            $this->on_permission_requirement_failed();
-            return false;
-        }
-    }
-
-    protected function require_group($pgroup)
-    {
-        if(is_array($pgroup)){
-            foreach($pgroup as $group){
-                if(model::is_user_group($group)){
-                    if($this->get_user()->get_group()->get_name() === $group->get_name()) return true;
-                } elseif (is_string($group)){
-                    if($this->get_user()->get_group()->get_name() === $group) return true;
-                } elseif (is_numeric($group) || is_integer($group)){
-                    if($this->get_user()->get_group()->get_id() === $group) return true;
-                }
-            }
-        } elseif(model::is_user_group($pgroup)) {
-            if($this->get_user()->get_group()->get_name() === $pgroup->get_name()) return true;
-        } elseif(is_string($pgroup)){
-            if($this->get_user()->get_group()->get_name() === $pgroup) return true;
-        } elseif(is_numeric($pgroup) || is_integer($pgroup)){
-            if($this->get_user()->get_group()->get_id() === $pgroup) return true;
-        }
-        $this->on_group_requirement_failed();
-        return false;
     }
 
     public function redirect($ppath = "")

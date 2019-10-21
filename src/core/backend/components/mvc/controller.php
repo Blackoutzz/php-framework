@@ -59,33 +59,23 @@ abstract class controller extends component
         }
     }
 
-    public function has_view($pview = false)
+    protected function has_view()
     {
         try
         {
-            if(!$pview)
+            $view = trim(strtolower(str_replace("-","_",$this->get_view_name())));
+            if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',$view))
             {
-                if(!$this->on_default_view())
-                    throw new exception("Invalid view name");
-                else 
-                    return true;
-            }
-            else
-            {
-                $view = trim(strtolower(str_replace("-","_",$pview)));
-                if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',$view))
+                if(method_exists('core\\backend\\components\\mvc\\controller',$view)) 
+                    throw new exception("Reserved view name");
+                if(method_exists($this,$view))
                 {
-                    if(method_exists('core\\backend\\components\\mvc\\controller',$view)) 
-                        throw new exception("Reserved view name");
-                    if(method_exists($this,$view))
-                    {
-                        return true;
-                    } else {
-                        throw new exception("No view configured inside controller");
-                    }
+                    return true;
                 } else {
-                    throw new exception("Invalid view name");
+                    throw new exception("No view configured inside controller");
                 }
+            } else {
+                throw new exception("Invalid view name");
             }
         }
         catch (exception $e)
@@ -177,17 +167,21 @@ abstract class controller extends component
         try
         {
             $user = $this->get_user();
-            if(is_array($ppermission))
+            if($user instanceof user)
             {
-                foreach($ppermission as $permission)
+                if(is_array($ppermission))
                 {
-                    if($user->can($permission)) return true;
+                    foreach($ppermission as $permission)
+                    {
+                        if($user->can($permission)) return true;
+                    }
+                    throw new exception("Required permission missing for {$user}");
+                } else {
+                    if($user->can($ppermission)) return true;
+                    throw new exception("Permission Required missing for {$user}");
                 }
-                throw new exception("Required permission missing for {$user}");
-            } else {
-                if($user->can($ppermission)) return true;
-                throw new exception("Permission Required missing for {$user}");
             }
+            throw new exception("No permission can be used without users.");
         } 
         catch(exception $e)
         {
@@ -201,18 +195,22 @@ abstract class controller extends component
         try
         {
             $user = $this->get_user();
-            if(is_array($ppermission))
+            if($user instanceof user)
             {
-                foreach($ppermission as $permission)
+                if(is_array($ppermission))
                 {
-                    if($user->can($permission)) continue;
-                    throw new exception("Required permission missing for {$user}");
+                    foreach($ppermission as $permission)
+                    {
+                        if($user->can($permission)) continue;
+                        throw new exception("Required permission missing for {$user}");
+                    }
+                    return true;
+                } else {
+                    if($user->can($ppermission)) return true;
+                    throw new exception("Permission Required missing for {$user}");
                 }
-                return true;
-            } else {
-                if($user->can($ppermission)) return true;
-                throw new exception("Permission Required missing for {$user}");
             }
+            throw new exception("No permissions can be used without users.");
         } 
         catch(exception $e)
         {
@@ -259,12 +257,16 @@ abstract class controller extends component
     {
         try
         {
-            foreach(program::get_plugins() as $plugin_slug => $plugin)
+            if(class_exists("core\\plugin"))
             {
-                if($plugin_slug === $pplugin) return true;
-                if($pplugin === $plugin) return true;
+                foreach(program::get_plugins() as $plugin_slug => $plugin)
+                {
+                    if($plugin_slug === $pplugin) return true;
+                    if($pplugin === $plugin) return true;
+                }
+                throw new exception("Plugin {$pplugin} Required and Installed.");
             }
-            throw new exception("Plugin {$pplugin} Required and Installed.");
+            throw new exception("Plugins can't be installed in the app");
         } 
         catch (exception $e)
         {
@@ -311,7 +313,7 @@ abstract class controller extends component
     {
         try
         {
-            if($this->has_view($this->get_view_name()))
+            if($this->has_view())
             {
                 $ref = new \ReflectionMethod($this,str_replace("-","_",$this->get_view_name()));
                 return count($ref->getParameters());
@@ -365,7 +367,7 @@ abstract class controller extends component
             }
 
         } 
-        catch (Exception $e)
+        catch (exception $e)
         {
             die();
         }
@@ -374,32 +376,24 @@ abstract class controller extends component
 
     protected function is_login()
     {
-        return program::$user->is_connected();
+        try
+        {
+            if(program::$user instanceof user)
+            {
+                return program::$user->is_connected();
+            }
+            throw new exception("User is required to login");
+        }
+        catch (exception $e)
+        {
+            return false;
+        }
     }
 
     //Event Related
     protected function on_initialize()
     {
         //Override this to execute custom code.
-    }
-
-    protected function on_default_view()
-    {
-        if(program::$user instanceof user)
-        {
-            if(program::$user->is_connected())
-            {       
-                if(method_exists($this,"dashboard"))
-                {
-                    return "dashboard";
-                }
-            }
-        }
-        if(method_exists($this,"index"))
-        {
-            return "index";
-        }
-        return false;
     }
 
     protected function on_group_requirement_failed()
