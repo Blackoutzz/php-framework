@@ -119,15 +119,6 @@ class curl extends component
         return $parser->get_request_from_cmdline($pcmd);
     } 
 
-    public function create_reverse_proxy_request($pbackend_url)
-    {
-        $backend_url = "https://myapp.backend.com:3000/";
-        $request_uri = $_SERVER['REQUEST_URI'];
-        $url = $backend_url . $request_uri;
-        $request = new request(array());
-        
-    }
-
     protected function on_request_error($pmsg)
     {
         return false;

@@ -44,6 +44,8 @@ class routing
         $this->parameters = array();
         $folder = new folder("controllers");
         $folder->import(true);
+        $this->view = new view(array("name"=>"index"));
+        $this->controller = new controller(array("name"=>"root"));
         $this->parse_request();
     }
 
@@ -102,7 +104,9 @@ class routing
                             $this->parse_request_parameters($parameter_id);
                             return true;
                         }
-                        return $this->on_default_view();
+                        $this->on_default_view();
+                        $this->parse_request_parameters($parameter_id);
+                        return true;
                     }
                 } 
                 return $this->on_default_controller_view();
@@ -135,10 +139,13 @@ class routing
                         $this->parse_request_parameters($parameter_id);
                         return true;
                     }
-                    return $this->on_default_view();
+                    $this->on_default_view();
+                    $this->parse_request_parameters($parameter_id);
+                    return true;
                 }
             }
-            return $this->on_default_controller_view(); 
+            $this->on_default_controller_view(); 
+            return true;
         } 
         catch (exception $e)
         {
@@ -154,13 +161,13 @@ class routing
             if(class_exists("controllers\\{$type}\\root"))
             {
                 $this->controller = new controller(array("id"=>1,"name"=>"root"));
-                return true;
+                return false;
             }
             throw new exception("Default {$type} controller not found",503);
         }
         catch (exception $e)
         {
-            return $this->on_request_error($e);
+            return $this->on_controller_not_found();
         }
     }
 
@@ -180,13 +187,13 @@ class routing
                         {
                             $this->view = new view(array("id"=>2,"name"=>"dashboard"));
                             $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
-                            return true;
+                            return false;
                         } else {
                             if(method_exists($namespace,"index"))
                             {
                                 $this->view = new view(array("id"=>1,"name"=>"index"));
                                 $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
-                                return true;
+                                return false;
                             }
                             throw new exception("Default {$type} view isn't created",404);
                         }
@@ -195,7 +202,7 @@ class routing
                         {
                             $this->view = new view(array("id"=>1,"name"=>"index"));
                             $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
-                            return true;
+                            return false;
                         }
                         throw new exception("Default {$type} view isn't created",404);
                     }
@@ -220,6 +227,29 @@ class routing
     protected function on_default_controller_view()
     {
         return ($this->on_default_controller() && $this->on_default_view());
+    }
+
+    protected function on_controller_not_found()
+    {
+        $type = $this->request->get_type();
+        $controller_data ="<?php
+        namespace controllers\{type};
+        use core\backend\components\mvc\controllers\{type};
+                
+        class root extends {type}
+        {
+
+        }
+        ";
+        $controller_data = str_replace('{type}',$type,$controller_data);
+        $controller_data = str_replace("    ","",$controller_data);
+        $file = new file("/controllers/{$type}/root.php");
+        if($file->set_contents($controller_data))
+        {
+            $file->import();
+            return true;
+        }
+        return false;
     }
 
     protected function on_request_error(exception $pexception)
@@ -467,7 +497,7 @@ class routing
 
     public function get_controller_type()
     {
-        return $this->type;
+        return $this->request->get_type();
     }
 
 }
