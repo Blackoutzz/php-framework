@@ -96,20 +96,21 @@ class routing
                     if(isset($parameters[$parameter_id]) && $parameters[$parameter_id] != "")
                     {
                         if($this->parse_managed_controller($parameters[$parameter_id])) $parameter_id++;
-                        else $this->on_default_controller();
+                        elseif(!$this->on_default_controller()) return false;
                         if(isset($parameters[$parameter_id]) && $parameters[$parameter_id] != "")
                         {
                             if($this->parse_managed_view($parameters[$parameter_id])) $parameter_id++;
-                            else $this->on_default_view();
+                            elseif(!$this->on_default_view()) return false;
                             $this->parse_request_parameters($parameter_id);
                             return true;
                         }
-                        $this->on_default_view();
+                        if(!$this->on_default_view()) return false;
                         $this->parse_request_parameters($parameter_id);
                         return true;
                     }
                 } 
-                return $this->on_default_controller_view();
+                if(!$this->on_default_controller_view()) return false;
+                return true;
             } else {
                 throw new exception("Database unavailable.",503);
             }
@@ -131,20 +132,20 @@ class routing
                 if(isset($parameters[$parameter_id]) && $parameters[$parameter_id] != "")
                 {
                     if($this->parse_unmanaged_controller($parameters[$parameter_id])) $parameter_id++;
-                    else $this->on_default_controller();
+                    elseif(!$this->on_default_controller()) return false;
                     if(isset($parameters[$parameter_id]) && $parameters[$parameter_id] != "")
                     {
                         if($this->parse_unmanaged_view($parameters[$parameter_id])) $parameter_id++;
-                        else $this->on_default_view();
+                        elseif(!$this->on_default_view()) return false;
                         $this->parse_request_parameters($parameter_id);
                         return true;
                     }
-                    $this->on_default_view();
+                    if(!$this->on_default_view()) return false;
                     $this->parse_request_parameters($parameter_id);
                     return true;
                 }
             }
-            $this->on_default_controller_view(); 
+            if(!$this->on_default_controller_view()) return false; 
             return true;
         } 
         catch (exception $e)
@@ -161,13 +162,14 @@ class routing
             if(class_exists("controllers\\{$type}\\root"))
             {
                 $this->controller = new controller(array("id"=>1,"name"=>"root"));
-                return false;
+                return true;
             }
             throw new exception("Default {$type} controller not found",503);
         }
         catch (exception $e)
         {
-            return $this->on_controller_not_found();
+            $this->on_controller_not_found();
+            return $this->on_request_error($e);
         }
     }
 
@@ -187,13 +189,13 @@ class routing
                         {
                             $this->view = new view(array("id"=>2,"name"=>"dashboard"));
                             $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
-                            return false;
+                            return true;
                         } else {
                             if(method_exists($namespace,"index"))
                             {
                                 $this->view = new view(array("id"=>1,"name"=>"index"));
                                 $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
-                                return false;
+                                return true;
                             }
                             throw new exception("Default {$type} view isn't created",404);
                         }
@@ -202,7 +204,7 @@ class routing
                         {
                             $this->view = new view(array("id"=>1,"name"=>"index"));
                             $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
-                            return false;
+                            return true;
                         }
                         throw new exception("Default {$type} view isn't created",404);
                     }
@@ -211,6 +213,7 @@ class routing
                     {
                         $this->view = new view(array("id"=>1,"name"=>"index"));
                         $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
+                        return true;
                     }
                     throw new exception("Default {$type} view isn't created",404);
                 }
@@ -226,7 +229,9 @@ class routing
 
     protected function on_default_controller_view()
     {
-        return ($this->on_default_controller() && $this->on_default_view());
+        if(!$this->on_default_controller()) return false;
+        if(!$this->on_default_view()) return false;
+        return true;
     }
 
     protected function on_controller_not_found()
@@ -246,8 +251,7 @@ class routing
         $file = new file("/controllers/{$type}/root.php");
         if($file->set_contents($controller_data))
         {
-            $file->import();
-            return true;
+            return $file->import();
         }
         return false;
     }
