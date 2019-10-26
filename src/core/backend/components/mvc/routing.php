@@ -349,7 +349,8 @@ class routing
         {
             if($view_name = $this->parse_view_name($pview))
             {
-                if(method_exists($this->parse_controller_namespace($this->controller->get_name()),$view_name))
+                if(($this->get_controller_type() === "api" && method_exists($this->parse_controller_namespace($this->controller->get_name()),$this->get_view_prefix().$view_name))
+                || method_exists($this->parse_controller_namespace($this->controller->get_name()),$view_name))
                 {
                     $this->view = new view(array("name"=>$view_name));
                     $this->controller_view = new controller_view(array("controller"=>$this->controller,"view"=>$this->view));
@@ -363,7 +364,8 @@ class routing
         } 
         catch (exception $e)
         {
-            return $this->on_default_view();
+            $this->on_default_view();
+            return false;
         }
     }
 
@@ -389,7 +391,8 @@ class routing
         }
         catch (exception $e)
         {
-            return $this->on_default_controller();
+            $this->on_default_controller();
+            return false;
         }
     }
 
@@ -428,13 +431,31 @@ class routing
         }
     }
 
+    protected function get_view_prefix()
+    {
+        switch(strtolower($_SERVER["REQUEST_METHOD"]))
+        {
+            case "get":
+                return "get_";
+            case "put": 
+                return "update_";
+            case "delete":
+                return "delete_";
+            case "post":
+                return "add_";
+            default:
+                return "get_";
+        }
+    }
+
     protected function parse_view_name($pview)
     {
         try
         {
-            if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',trim(strtolower($pview)),$view))
+            $view = trim(strtolower($pview));
+            if(preg_match('~^([A-z]+[A-z-_]*[A-z]+)$~im',$view,$view_names))
             {
-                return $view[1];
+                return $view_names[1];
             } else {
                throw new exception("Invalid view name");
             }
