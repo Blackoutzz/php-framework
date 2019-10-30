@@ -1,5 +1,5 @@
 <?php
-namespace app\core\common;
+namespace core\common\components;
 
 /**
  * str short summary.
