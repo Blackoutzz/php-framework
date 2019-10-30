@@ -34,22 +34,57 @@ class api extends controller
                     if(isset($_REQUEST["format"]))
                     {
                         $format = strtolower($_REQUEST["format"]);
-                        switch($format)
+                        if($this->cache->is_required())
                         {
-                            case 'csv':
-                                $this->on_csv_output($data);
-                                break;
-                            case 'xml':
-                                $this->on_xml_output($data);
-                                break;
-                            case 'json':
-                                $this->on_json_output($data);
-                                break;
-                            default:
-                                $this->on_json_output($data);
+                            if(!$this->cache->is_saved())
+                            {
+                                switch($format)
+                                {
+                                    case 'csv':
+                                        $this->on_csv_output($data);
+                                        break;
+                                    case 'xml':
+                                        $this->on_xml_output($data);
+                                        break;
+                                    case 'json':
+                                        $this->on_json_output($data);
+                                        break;
+                                    default:
+                                        $this->on_json_output($data);
+                                }
+                                $this->cache->save_view();
+                            } else {
+                                $this->cache->restore_saved_view();
+                            }
+                        } else {
+                            switch($format)
+                            {
+                                case 'csv':
+                                    $this->on_csv_output($data);
+                                    break;
+                                case 'xml':
+                                    $this->on_xml_output($data);
+                                    break;
+                                case 'json':
+                                    $this->on_json_output($data);
+                                    break;
+                                default:
+                                    $this->on_json_output($data);
+                            }
                         }
                     } else {
-                        $this->on_json_output($data);
+                        if($this->cache->is_required())
+                        {
+                            if(!$this->cache->is_saved())
+                            {
+                                $this->on_json_output($data);
+                                $this->cache->save_view();
+                            } else {
+                                $this->cache->restore_saved_view();
+                            }
+                        } else {
+                            $this->on_json_output($data);
+                        }
                     }
                 } else {
                     throw new exception("Api returned no data",503);
