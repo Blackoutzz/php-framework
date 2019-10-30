@@ -1,8 +1,6 @@
 <?php
-namespace core\backend\programs;
-use core\common\str;
+namespace core\backend\components\programs;
 use core\backend\system\console;
-use core\backend\system\os;
 
 /**
  * tesseract short summary.

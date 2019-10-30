@@ -1,8 +1,8 @@
 <?php
-namespace core\backend\programs;
-use core\backend\str;
-use core\backend\system\console;
-use core\backend\system\os;
+namespace core\backend\components\system\programs;
+use core\common\components\str;
+use core\backend\components\system\console;
+use core\backend\components\system\os;
 
 /**
  * ipconfig short summary.

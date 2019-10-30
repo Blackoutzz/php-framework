@@ -1,5 +1,5 @@
 <?php
-namespace core\backend\programs;
+namespace core\backend\components\system\programs;
 use core\backend\filesystem\file;
 use core\backend\system\console;
 
