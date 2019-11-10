@@ -13,7 +13,8 @@ namespace core\common\components;
  * @Website https://Blackoutzz.me
  **/
 
-class str {
+class str 
+{
 
     protected $string;
 

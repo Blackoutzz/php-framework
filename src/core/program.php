@@ -35,6 +35,8 @@ abstract class program
 
     static  $routing;
 
+    static  $path = "/";
+
     static  $plugins = array();
     
     public function __construct($pargv = array())
@@ -68,6 +70,8 @@ abstract class program
 
     static public function runtime($pruntime_type = runtime_type::dev) : void
     {
+        $local_core = new folder(program::$path."core",false);
+        if($local_core->exist()) $local_core->import(true);
         ob_start();
         ini_set ("memory_limit",'1024M');
         header("X-XSS-Protection: 1");

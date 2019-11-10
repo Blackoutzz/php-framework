@@ -14,7 +14,7 @@ use core\program;
 class log
 {
 
-    const logs_folder = "logs/";
+    const logs_folder = program::$path."logs/";
 
     protected $name;
 
