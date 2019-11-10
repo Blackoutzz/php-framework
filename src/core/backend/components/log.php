@@ -14,12 +14,13 @@ use core\program;
 class log
 {
 
-    const logs_folder = program::$path."logs/";
+    protected $folderpath;
 
     protected $name;
 
     public function __construct($pname="core")
     {
+        $this->folderpath = program::$path."logs/";
         $this->name = $pname;
     }
 
@@ -27,8 +28,8 @@ class log
     {
         $id = 0;
         if(isset(program::$user)) $id = program::$user->get_id();
-        $folder = self::logs_folder.$this->name.DS.date("Y").DS.date("F").DS;
-        $log = self::logs_folder.$this->name.DS.date("Y").DS.date("F").DS.date("j").".log";
+        $folder = $this->folderpath.$this->name.DS.date("Y").DS.date("F").DS;
+        $log = $this->folderpath.$this->name.DS.date("Y").DS.date("F").DS.date("j").".log";
         if(!is_dir($folder)){
             if(!mkdir($folder,755,true)){
                 error_log("log::get -> Permission denied to create log's folder.");
@@ -59,8 +60,8 @@ class log
 
     public function get_daily_logs()
     {
-        $folder = self::logs_folder.$this->name.DS.date("Y").DS.date("F").DS;
-        $log = self::logs_folder.$this->name.DS.date("Y").DS.date("F").DS.date("j").".log";
+        $folder = $this->folderpath.$this->name.DS.date("Y").DS.date("F").DS;
+        $log = $this->folderpath.$this->name.DS.date("Y").DS.date("F").DS.date("j").".log";
         if(!is_dir($folder)){
             if(!mkdir($folder,755,true)){
                 error_log("log::get -> Permission denied to create log's folder.");
