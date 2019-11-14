@@ -27,7 +27,7 @@ class json extends database
         {
             $this->name = $pconfig["database"];
             $this->connection = new connection($pconfig["database"]);
-            $this->model = new model();
+            $this->model = new model($this->connection);
         }
     }
 

@@ -24,7 +24,7 @@ class redis extends database
             $this->name = $pconfig['host'].":".$pconfig['port'];
             $this->connection = new connection($pconfig['host'],$pconfig['port']);
             $this->connection->connect();
-            $this->model = new model();
+            $this->model = new model($this->connection);
         }
     }
 
