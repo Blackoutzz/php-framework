@@ -1,6 +1,7 @@
 <?php
 namespace core\backend\network\curl;
 use core\common\regex;
+use core\program;
 
 /**
  * curl request.
@@ -128,8 +129,8 @@ class request
         curl_setopt($this->request,CURLOPT_FOLLOWLOCATION,true);
         curl_setopt($this->request,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($this->request,CURLOPT_MAXREDIRS,5);
-        curl_setopt($this->request,CURLOPT_COOKIEJAR,"./cookie.txt");
-        curl_setopt($this->request,CURLOPT_COOKIEFILE,"./cookie.txt");
+        curl_setopt($this->request,CURLOPT_COOKIEJAR,program::$path."cookie.txt");
+        curl_setopt($this->request,CURLOPT_COOKIEFILE,program::$path."cookie.txt");
     }
 
     public function set_data($pdata)

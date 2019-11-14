@@ -31,7 +31,7 @@ abstract class program
 
     static  $cryptography;
 
-    static  $database;
+    static  $databases = array();
 
     static  $routing;
 
@@ -70,7 +70,7 @@ abstract class program
 
     static public function runtime($pruntime_type = runtime_type::dev) : void
     {
-        $local_core = new folder(program::$path."core",false);
+        $local_core = new folder(self::$path."core",false);
         if($local_core->exist()) $local_core->import(true);
         ob_start();
         ini_set ("memory_limit",'1024M');
@@ -90,7 +90,7 @@ abstract class program
             ini_set ( "display_errors", 0 );
         }
 
-        $plugins = new folder("plugins".DS);
+        $plugins = new folder(self::$path."plugins".DS);
         $plugins = $plugins->get_folders();
         foreach($plugins as $plugin)
         {
@@ -174,7 +174,7 @@ abstract class program
     protected function configure($pargv)
     {
         if(isset($pargv["setup"])) self::$configured = $pargv["setup"];
-        if(isset($pargv["database"])) self::$database = new mysql($pargv["database"]);
+        if(isset($pargv["database"])) self::$databases[] = new mysql($pargv["database"]);
         if(isset($pargv["salt"]) && isset($pargv["algo"])) self::$cryptography = new cryptography(array("algo"=>$pargv["algo"],"salt"=>$pargv["salt"]));
     }
 

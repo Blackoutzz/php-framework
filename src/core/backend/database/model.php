@@ -1,11 +1,32 @@
 <?php
 namespace core\backend\database;
+use core\backend\database\connection;
 use core\backend\database\mysql\dataset as mysql_dataset;
 use core\common\str;
 
 
 abstract class model extends reference
 {
+
+    static $connection;
+
+    public function __construct($pconnection)
+    {
+        if($pconnection instanceof connection)
+        {
+            self::$connection = $pconnection;
+        }
+    }
+
+    static public function get_connection()
+    {
+        return self::$connection;
+    } 
+
+    static public function is_connected()
+    {
+        return (isset(self::$connection) && self::$connection->is_connected());
+    }
 
     static public function get_query_offset($pmax,$ppage)
     {

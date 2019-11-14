@@ -6,15 +6,16 @@ namespace core\backend\database;
  * 
  * Default database connection for database component
  * 
- * @Version 1.0
- * @Author  Mickael Nadeau
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 abstract class connection
 {
+
     protected $host;
 
     protected $port;

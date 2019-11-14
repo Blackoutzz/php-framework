@@ -32,6 +32,16 @@ use core\backend\database\mysql\datasets\user_state;
 use core\backend\database\mysql\datasets\user;
 use core\backend\database\mysql\datasets\view;
 
+/**
+ * Model
+ * 
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
+ **/
+
 class model extends database_model
 {
 

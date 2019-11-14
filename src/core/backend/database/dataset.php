@@ -16,7 +16,7 @@ use core\program;
  * @Website https://Blackoutzz.me
  **/
 
-class dataset extends model
+class dataset
 {
     
     public function __construct($pdata,$pvar_names = array())

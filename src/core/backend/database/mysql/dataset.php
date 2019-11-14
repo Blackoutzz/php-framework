@@ -3,6 +3,16 @@ namespace core\backend\database\mysql;
 use core\backend\database\dataset as database_dataset;
 use core\common\exception;
 
+/**
+ * Dataset Array
+ * 
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
+ **/
+
 abstract class dataset extends database_dataset
 {
 

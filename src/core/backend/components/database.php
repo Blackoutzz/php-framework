@@ -16,8 +16,12 @@ define("NULL",0);
 abstract class database
 {
 
-	protected $connection;
+	protected $name;
 
+    protected $connection;
+
+	protected $model;
+	
 	public function __construct($pconfig = array())
 	{
 		
@@ -43,6 +47,16 @@ abstract class database
 			$this->connection = $pconnection;
 			return 1;
 		}
+	}
+
+	public function get_model($pmodel = "core")
+	{
+		return $this->model;
+	}
+	
+	public function get_name()
+	{
+		return $this->name;
 	}
 
 }

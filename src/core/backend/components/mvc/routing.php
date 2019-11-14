@@ -248,7 +248,7 @@ class routing
         ";
         $controller_data = str_replace('{type}',$type,$controller_data);
         $controller_data = str_replace("    ","",$controller_data);
-        $file = new file("/controllers/{$type}/root.php");
+        $file = new file(program::$path."controllers/{$type}/root.php");
         if($file->set_contents($controller_data))
         {
             return $file->import();

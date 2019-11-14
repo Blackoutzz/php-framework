@@ -6,6 +6,16 @@ use core\backend\database\connection as database_connection;
 use core\backend\database\dataset_array;
 use core\backend\database\mysql\dataset;
 
+/**
+ * Dataset Array
+ * 
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
+ **/
+
 class connection extends database_connection 
 {
 

@@ -29,14 +29,14 @@ abstract class component
         return program::$cryptography;
     }
 
-    protected function get_database()
+    protected function get_databases()
     {
-        return program::$database;
+        return program::$databases;
     }
 
     protected function has_database()
     {
-        return (program::$database instanceof database);
+        return (count(program::$databases));
     }
 
     protected function get_controller_view()

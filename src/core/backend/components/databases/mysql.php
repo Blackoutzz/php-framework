@@ -9,37 +9,24 @@ use core\backend\database\mysql\model;
  *
  * This object will handle dealing with the database internally.
  *
- * @Version 1.0
- * @Author  Mickael Nadeau
- * @Twitter @Mick4Secure
- * @Github  @Blackoutzz
- * @Website https://Blackoutzz.me
+ * @version 1.0
+ * @author  Mickael Nadeau
+ * @twitter @Mick4Secure
+ * @github  @Blackoutzz
+ * @website https://Blackoutzz.me
  **/
 
 class mysql extends database
 {
 
-    protected $connection;
-
-    protected $model;
-
     public function __construct($pconfig = array())
     {
         if(isset($pconfig["host"]) && isset($pconfig["port"]) && isset($pconfig["username"]) && isset($pconfig["password"]) && isset($pconfig["db"]))
         {
+            $this->name = $pconfig["db"];
             $this->connection = new connection($pconfig["host"],$pconfig["port"],$pconfig["username"],$pconfig["password"],$pconfig["db"]);
             $this->model = new model($this->connection);
         }
-    }
-
-    public function get_model()
-    {
-        return $this->model;
-    }
-
-    public function get_connection()
-    {
-        return $this->connection;
     }
 
 }
