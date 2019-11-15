@@ -90,15 +90,22 @@ abstract class program
             ini_set ( "display_errors", 0 );
         }
 
-        $plugins = new folder(self::$path."plugins".DS);
-        $plugins = $plugins->get_folders();
-        foreach($plugins as $plugin)
+        $plugins = new folder(self::$path."plugins".DS,false);
+        if($plugins->exist())
         {
-            if(file_exists($plugin."main.php"))
+            $plugins = $plugins->get_folders();
+            if(count($plugins >=1))
             {
-                if(include($plugin."main.php")) self::$plugins[$plugin->get_name()] = "\\".$plugin->get_name()."\\main";
+                foreach($plugins as $plugin)
+                {
+                    if(file_exists($plugin."main.php"))
+                    {
+                        if(include($plugin."main.php")) self::$plugins[$plugin->get_name()] = "\\".$plugin->get_name()."\\main";
+                    }
+                }
             }
         }
+        
 
         self::$cryptography = new cryptography();
         self::$user = new user();
