@@ -174,7 +174,7 @@ abstract class program
     protected function configure($pargv)
     {
         if(isset($pargv["setup"])) self::$configured = $pargv["setup"];
-        if(isset($pargv["database"])) self::$databases[] = new mysql($pargv["database"]);
+        if(isset($pargv["database"])) self::$databases["mysql"] = new mysql($pargv["database"]);
         if(isset($pargv["salt"]) && isset($pargv["algo"])) self::$cryptography = new cryptography(array("algo"=>$pargv["algo"],"salt"=>$pargv["salt"]));
     }
 
