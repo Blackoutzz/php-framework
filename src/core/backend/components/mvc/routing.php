@@ -51,12 +51,12 @@ class routing
 
     protected function get_database()
     {
-        return program::$database;
+        return program::$databases["mysql"];
     }
 
     protected function has_database()
     {
-        if(program::$database instanceof database);
+        if(program::$databases["mysql"] instanceof database);
     }
 
     protected function parse_request()
