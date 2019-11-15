@@ -15,4 +15,10 @@ use core\backend\database\dataset as database_dataset;
 class dataset extends database_dataset
 {
 
+    protected $id;
+
+    protected $key;
+
+    protected $value;
+
 }

@@ -102,7 +102,7 @@ abstract class program
 
         self::$cryptography = new cryptography();
         self::$user = new user();
-        self::$database = new mysql();
+        self::$databases["mysql"] = new mysql();
         self::$routing = new routing();
     }
 
