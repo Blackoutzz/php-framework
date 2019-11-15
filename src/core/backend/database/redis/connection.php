@@ -1,7 +1,7 @@
 <?php
-namespace app\core\backend\database\redis;
-use app\core\backend\database\connection as database_connection;
-use app\core\common\exception;
+namespace core\backend\database\redis;
+use core\backend\database\connection as database_connection;
+use core\common\exception;
 use \redis as redis_client;
 
 /**
