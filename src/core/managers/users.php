@@ -12,8 +12,8 @@ class users extends manager
         {
             if($pcomponent instanceof user)
             {
-                $id = $component->get_id();
-                $this->array[$id] = $component;
+                $id = $pcomponent->get_id();
+                $this->array[$id] = $pcomponent;
             }
         } 
         elseif(is_array($pcomponent) && count($pcomponent) >=1)

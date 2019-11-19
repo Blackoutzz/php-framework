@@ -181,9 +181,9 @@ class routing
             $namespace = "controllers\\{$type}\\root";
             if(class_exists($namespace))
             {
-                if(program::$user instanceof user)
+                if(program::$users[0] instanceof user)
                 {
-                    if(program::$user->is_connected())
+                    if(program::$users[0]->is_connected())
                     {
                         if(method_exists($namespace,"dashboard"))
                         {
