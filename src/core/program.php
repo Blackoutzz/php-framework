@@ -5,7 +5,8 @@ use core\backend\components\databases\mysql;
 use core\backend\components\mvc\cryptography;
 use core\backend\components\mvc\routing;
 use core\backend\components\mvc\user;
-
+use core\managers\users;
+use core\managers\databases;
 define("runid",uniqid());
 define('DS',DIRECTORY_SEPARATOR);
 define('CRLF',"\r\n");
@@ -27,7 +28,7 @@ abstract class program
 
     static  $debug;
 
-    static  $user;
+    static  $users;
 
     static  $cryptography;
 
@@ -35,13 +36,17 @@ abstract class program
 
     static  $routing;
 
-    static  $path = "/";
+    static  $path = "./";
 
     static  $plugins = array();
-    
+
     public function __construct($pargv = array())
     {
         self::runtime();
+        self::$databases = new databases();
+        self::$cryptography = new cryptography();
+        self::$users = new users(new user());
+        self::$routing = new routing();
         self::configure($pargv);
     }
 
@@ -65,10 +70,9 @@ abstract class program
             ob_end_flush();
         }
         flush();
-
     }
 
-    static public function runtime($pruntime_type = runtime_type::dev) : void
+    static public function runtime($pruntime_type = runtime_type::prod) : void
     {
         $local_core = new folder(self::$path."core",false);
         if($local_core->exist()) $local_core->import(true);
@@ -105,12 +109,6 @@ abstract class program
                 }
             }
         }
-        
-
-        self::$cryptography = new cryptography();
-        self::$user = new user();
-        self::$databases["mysql"] = new mysql();
-        self::$routing = new routing();
     }
 
     static public function push() : void
@@ -181,7 +179,7 @@ abstract class program
     protected function configure($pargv)
     {
         if(isset($pargv["setup"])) self::$configured = $pargv["setup"];
-        if(isset($pargv["database"])) self::$databases["mysql"] = new mysql($pargv["database"]);
+        //if(isset($pargv["database"])) self::$databases["mysql"] = new mysql($pargv["database"]);
         if(isset($pargv["salt"]) && isset($pargv["algo"])) self::$cryptography = new cryptography(array("algo"=>$pargv["algo"],"salt"=>$pargv["salt"]));
     }
 

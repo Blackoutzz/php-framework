@@ -3,7 +3,7 @@
     "description": "Core Framework to deploy full fledge php application",
     "version": "1.0.0",
     "homepage": "https://github.com/Blackoutzz/php-framework",
-    "keywords": ["php", "mvc", "components", "framework","app"],
+    "keywords": ["php" , "mvc" , "components" , "framework" , "app"],
     "type": "library",
     "license": "MIT",
     "authors": [
