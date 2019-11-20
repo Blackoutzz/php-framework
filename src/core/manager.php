@@ -50,7 +50,7 @@ class manager implements \Iterator , \ArrayAccess, \Countable
 
     public function offsetSet($offset, $value)
     {
-        if (is_null($offset))
+        if(is_null($offset))
         {
             $this->array[] = $value;
         } else {

@@ -19,9 +19,9 @@ use core\backend\components\database;
 abstract class component
 {
 
-    protected function get_user()
+    protected function get_users()
     {
-        return program::$user;
+        return program::$users;
     }
 
     protected function get_encoder()
@@ -41,7 +41,6 @@ abstract class component
 
     protected function get_controller_view()
     {
-        
         return program::$routing->get_controller_view();
     }
 

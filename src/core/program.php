@@ -40,12 +40,15 @@ abstract class program
 
     static  $plugins = array();
 
+    static  $runtime = runtime_type::prod;
+
     public function __construct($pargv = array())
     {
-        self::runtime();
+        self::runtime(self::$runtime);
         self::$databases = new databases();
         self::$cryptography = new cryptography();
-        self::$users = new users(new user());
+        self::$users = new users();
+        self::$users[] = new user();
         self::$routing = new routing();
         self::configure($pargv);
     }
@@ -72,7 +75,7 @@ abstract class program
         flush();
     }
 
-    static public function runtime($pruntime_type = runtime_type::prod) : void
+    static public function runtime($pruntime_type = runtime_type::dev) : void
     {
         $local_core = new folder(self::$path."core",false);
         if($local_core->exist()) $local_core->import(true);
