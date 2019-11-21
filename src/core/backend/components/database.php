@@ -16,8 +16,6 @@ define("NULL",0);
 abstract class database
 {
 
-	protected $name;
-
     protected $connection;
 
 	protected $model;
@@ -51,12 +49,21 @@ abstract class database
 
 	public function get_model($pmodel = "core")
 	{
-		return $this->model;
+		$model_name = trim(strtolower($pmodel));
+		if($model_name === "core") return $this->model;
+		$name = $this->get_name();
+		if(class_exists("core\\backend\\database\\{$name}\\models\\{$model_name}"))
+		{
+			$namespace = "core\\backend\\database\\{$name}\\models\\{$model_name}";
+			return new $namespace($this->connection);
+		} else {
+			return $this->model;
+		}
 	}
 	
 	public function get_name()
 	{
-		return $this->name;
+		return array_pop(explode('\\',__CLASS__));
 	}
 
 }

@@ -1,5 +1,6 @@
 <?php
 namespace core\backend\database;
+use core\program;
 use core\component;
 use core\common\str;
 use core\program;
@@ -401,6 +402,11 @@ class dataset
         if(is_bool($this->$pvariable_name)) return "boolean";
         if(is_object($this->$pvariable_name)) return "object";
         return "null";
+    }
+
+    protected function get_databases()
+    {
+        return program::$databases;
     }
 
 }
