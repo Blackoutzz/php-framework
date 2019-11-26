@@ -3,7 +3,6 @@ namespace core\backend\database;
 use core\program;
 use core\component;
 use core\common\str;
-use core\program;
 
 /**
  * Dataset
