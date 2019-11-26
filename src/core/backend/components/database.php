@@ -50,8 +50,9 @@ abstract class database
 	public function get_model($pmodel = "core")
 	{
 		$model_name = trim(strtolower($pmodel));
-		if($model_name === "core") return $this->model;
 		$name = $this->get_name();
+		if($model_name === "core") return $this->model;
+		
 		if(class_exists("core\\backend\\database\\{$name}\\models\\{$model_name}"))
 		{
 			$namespace = "core\\backend\\database\\{$name}\\models\\{$model_name}";
@@ -63,7 +64,7 @@ abstract class database
 	
 	public function get_name()
 	{
-		return array_pop(explode('\\',__CLASS__));
+		return array_pop(explode('\\', get_class($this)));
 	}
 
 }
