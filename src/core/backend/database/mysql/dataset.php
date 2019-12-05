@@ -2,7 +2,7 @@
 namespace core\backend\database\mysql;
 use core\backend\database\dataset as database_dataset;
 use core\common\exception;
-
+use core\program;
 /**
  * Dataset Array
  * 
@@ -15,8 +15,6 @@ use core\common\exception;
 
 abstract class dataset extends database_dataset
 {
-
-    protected $table_name = NULL;
 
     protected $id = NULL;
 
@@ -53,14 +51,30 @@ abstract class dataset extends database_dataset
         $this->id = intval($pid);
     }
 
-    public function save()
+    public function save($pid = 0)
     {
 
     }
 
-    public function delete()
+    public function delete($pid = 0)
     {
 
+    }
+
+    public function __toString()
+    {
+        return $this->parse_table_name();
+    }
+
+    public function parse_table_name()
+    {
+        return array_pop(explode('\\', get_class($this)));
+    }
+
+    public function database($pid = 0)
+    {
+        $id = intval($pid);
+        return program::$databases->get_mysql_database_by_id($id);
     }
 
 }

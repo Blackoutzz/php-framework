@@ -18,13 +18,12 @@ class curl extends component
                 $parameters["request"] = "GET";
                 if(is_array($pheaders) && count($pheaders) >= 1) $parameters["header"] = $pheaders;
                 if(is_array($pcookies) && count($pcookies) >= 1) $parameters["cookie"] = $pcookies;
-
                 return new request($parameters);
             } else {
                 throw new exception("Unable to create request without url.");
             }
-            
-        } catch (exception $e)
+        } 
+        catch (exception $e)
         {
             return $this->on_request_error($e->get_message());
         }

@@ -16,9 +16,15 @@ namespace app\core\common;
 class enum implements \Iterator , \ArrayAccess, \Countable
 {
 
+    protected $array = array();
+
     protected $position = 0;
 
-    protected $array = array();
+    public function __construct($parray = array())
+    {
+        if(is_array($parray))
+            $this->array = $parray;
+    }
 
     public function rewind()
     {

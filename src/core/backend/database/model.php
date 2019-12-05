@@ -4,36 +4,35 @@ use core\backend\database\connection;
 use core\backend\database\mysql\dataset as mysql_dataset;
 use core\common\str;
 
-
 abstract class model extends reference
 {
 
-    static $connection;
+    protected $connection;
 
     public function __construct($pconnection)
     {
         if($pconnection instanceof connection)
         {
-            self::$connection = $pconnection;
+            $this->connection = $pconnection;
         }
     }
 
-    static public function get_connection()
+    protected function get_connection()
     {
-        return self::$connection;
+        return $this->connection;
     } 
 
-    static public function is_connected()
+    protected function is_connected()
     {
-        return (isset(self::$connection) && self::$connection->is_connected());
+        return (isset($this->connection) && $this->connection->is_connected());
     }
 
-    static public function get_query_offset($pmax,$ppage)
+    protected function get_query_offset($pmax,$ppage)
     {
         return ($pmax*($ppage-1));
     }
 
-    static public function parse_id(&$pid)
+    protected function parse_id(&$pid)
     {
         if(is_numeric($pid) || is_long($pid) || is_integer($pid))
         {
@@ -51,8 +50,8 @@ abstract class model extends reference
         } 
         return NULL;
     }
-
-    static public function get_parsed_id($pid)
+    
+    protected function get_parsed_id($pid)
     {
         if(is_numeric($pid) || is_long($pid) || is_integer($pid))
         {
@@ -69,17 +68,17 @@ abstract class model extends reference
         return NULL;
     }
 
-    static public function parse_boolean(&$pbool)
+    protected function parse_boolean(&$pbool)
     {
         return $pbool = intval(($pbool === true || $pbool >= 1));
     }
 
-    static public function get_parsed_boolean($pbool)
+    protected function get_parsed_boolean($pbool)
     {
         return (intval(($pbool === true || $pbool >= 1)));
     }
 
-    static public function is_null($pvar)
+    protected function is_null($pvar)
     {
         if($pvar === NULL || $pvar === 0 || $pvar === "") return true;
         if($pvar instanceof mysql_dataset)
@@ -89,22 +88,22 @@ abstract class model extends reference
         return false;
     }
 
-    static public function get_sanitized_string($pstring)
+    protected function get_sanitized_string($pstring)
     {
        return str::sanitize($pstring);
     }
 
-    static public function sanitize_string(&$pstring)
+    protected function sanitize_string(&$pstring)
     {
        return ($pstring = str::sanitize($pstring));
     }
 
-    static public function get_sanitized_integer($pinteger)
+    protected function get_sanitized_integer($pinteger)
     {
         return intval($pinteger);
     }
 
-    static public function sanitize_integer(&$pinteger)
+    protected function sanitize_integer(&$pinteger)
     {
         return ($pinteger = intval($pinteger));
     }

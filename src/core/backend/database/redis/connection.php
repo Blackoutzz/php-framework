@@ -71,7 +71,6 @@ class connection extends database_connection
 
 	public function get_keys($ppattern)
     {
-        // Returns an array of the keys
         try
         {
             if($this->is_connected())

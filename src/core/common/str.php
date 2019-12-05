@@ -41,7 +41,6 @@ abstract class str
         {
             return 0;
         }
-
     }
 
     static function remove($pstring,$premove)
