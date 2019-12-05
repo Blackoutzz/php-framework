@@ -15,13 +15,7 @@ class plugin extends dataset
 
     protected $enabled = 0;
 
-    public function __construct($pdata)
-    {
-        $this->table_name = "plugins";
-        $this->parse_data($pdata);
-    }
-
-    public function save()
+    public function save($pid = 0)
     {
         if($this->exist())
         {

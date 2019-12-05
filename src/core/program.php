@@ -88,7 +88,7 @@ abstract class program
         {
             if(self::is_using_xdebug()) ini_set('xdebug.max_nesting_level', 30000);
             ini_set("LSAPI_MAX_PROCESS_TIME",-1);
-            error_reporting(E_ERROR | E_WARNING | E_PARSE);
+            error_reporting(E_ALL |E_ERROR | E_WARNING | E_PARSE);
             ini_set ( "display_errors", 1 );
         }
         elseif ($pruntime_type === runtime_type::prod)

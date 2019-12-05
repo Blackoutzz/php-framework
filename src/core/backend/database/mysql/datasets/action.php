@@ -13,7 +13,7 @@ class action extends dataset
         $this->parse_data($pdata);
     }
 
-    public  function save()
+    public  function save($pid = 0)
     {
         if($this->exist())
         {

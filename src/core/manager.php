@@ -70,7 +70,7 @@ class manager implements \Iterator , \ArrayAccess, \Countable
 
     public function offsetGet($offset)
     {
-        return isset($this->array[$offset]) ? $this->array[$offset] : null;
+        return isset($this->array[$offset]) ? $this->array[$offset] : false;
     }
 
     public function count()

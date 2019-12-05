@@ -12,13 +12,7 @@ class user_controller_view extends dataset
 
     protected $granted = 0;
 
-    public  function __construct($pdata)
-    {
-        $this->table_name = "user_controller_views";
-        $this->parse_data($pdata);
-    }
-
-    public  function save()
+    public  function save($pid = 0)
     {
         if($this->exist())
         {

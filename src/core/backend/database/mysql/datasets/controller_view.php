@@ -10,13 +10,7 @@ class controller_view extends dataset
 
     protected $view = NULL;
 
-    public  function __construct($pdata)
-    {
-        $this->table_name = "controller_views";
-        $this->parse_data($pdata);
-    }
-
-    public  function save()
+    public  function save($pid = 0)
     {
         if($this->exist())
         {

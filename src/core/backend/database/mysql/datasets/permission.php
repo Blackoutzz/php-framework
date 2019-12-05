@@ -10,13 +10,7 @@ class permission extends dataset
 
     protected $description = "";
 
-    public function __construct($pdata)
-    {
-        $this->table_name = "permissions";
-        $this->parse_data($pdata);
-    }
-
-    public function save()
+    public function save($pid = 0)
     {
         if($this->exist())
         {

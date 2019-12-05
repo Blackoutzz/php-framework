@@ -15,13 +15,7 @@ class user_action extends dataset
 
     protected $date;
 
-    public  function __construct($pdata)
-    {
-        $this->table_name = "user_actions";
-        $this->parse_data($pdata);
-    }
-
-    public  function save()
+    public  function save($pid = 0)
     {
         if($this->exist())
         {

@@ -10,14 +10,8 @@ class menu_category_option extends dataset
     protected $option = NULL;
 
     protected $value = "";
-
-    public function __construct($pdata)
-    {
-        $this->table_name = "menu_category_options";
-        $this->parse_data($pdata);
-    }
   
-    public function save()
+    public function save($pid = 0)
     {
         if($this->exist())
         {

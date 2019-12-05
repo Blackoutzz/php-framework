@@ -12,13 +12,7 @@ class menu_button extends dataset
 
     protected $category = NULL;
 
-    public function __construct($pdata)
-    {
-        $this->table_name = "menu_buttons";
-        $this->parse_data($pdata);
-    }
-
-    public function save()
+    public function save($pid = 0)
     {
         if($this->exist())
         {

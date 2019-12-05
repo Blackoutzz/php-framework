@@ -12,13 +12,7 @@ class user_permission extends dataset
 
     protected $granted = NULL;
 
-    public function __construct($pdata)
-    {
-        $this->table_name = "user_permissions";
-        $this->parse_data($pdata);
-    }
-
-    public  function save()
+    public  function save($pid = 0)
     {
         if($this->exist())
         {

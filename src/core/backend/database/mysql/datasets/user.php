@@ -18,13 +18,7 @@ class user extends dataset
 
     protected $last_update;
 
-    public  function __construct($pdata)
-    {
-        $this->table_name = "users";
-        $this->parse_data($pdata);
-    }
-
-    public  function save()
+    public  function save($pid = 0)
     {
         if($this->exist())
         {

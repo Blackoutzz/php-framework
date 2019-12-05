@@ -8,13 +8,7 @@ class controller extends dataset
 
     protected $name = "";
 
-    public function __construct($pdata)
-    {
-        $this->table_name = "controllers";
-        $this->parse_data($pdata);
-    }
-
-    public function save()
+    public function save($pid = 0)
     {
         if($this->exist()){
             return $this->update_request("UPDATE `controllers` SET name=? WHERE id=?","si",array($this->name,$this->id));

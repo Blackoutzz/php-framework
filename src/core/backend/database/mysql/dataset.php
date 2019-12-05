@@ -33,19 +33,6 @@ abstract class dataset extends database_dataset
         return $this->id;
     }
 
-    public function __toString()
-    {
-        if(isset($this->name))
-        {
-            return $this->name;
-        }
-        if(isset($this->id))
-        {
-            return "{$this->id}";
-        }
-        return "";
-    }
-
     protected function set_id($pid = 0)
     {
         $this->id = intval($pid);

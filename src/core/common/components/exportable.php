@@ -12,7 +12,11 @@ abstract class exportable extends parseable
 
     public function __unserialize($pdata)
     {
-        if(is_string($pdata)) $data = json_decode($pdata);
+        if(is_string($pdata))
+        {
+            $data = json_decode($pdata);
+        }
+        else $data = $pdata;
         if($data instanceof \stdClass || is_object($data))
         {
             foreach(get_object_vars($this) as $name => $value)
