@@ -6,5 +6,8 @@ services:
             dockerfile: dockerfile
         ports:
             - 80:80
-        #volumes:
-        #    - ./src/:/var/www/html/vendor/blackoutzz/framework/src/
+        volumes:
+            - ./src/:/var/www/html/vendor/blackoutzz/framework/src/
+            - ./src/:/var/www/html/vendor/blackoutzz/framework/src/
+            - ./html/controllers/:/var/www/html/controllers/
+            - ./html/ui/:/var/www/html/ui/

@@ -9,4 +9,6 @@ class root extends page
 
     public function info(){}
 
+    public function test(){}
+
 }

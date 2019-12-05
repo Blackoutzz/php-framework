@@ -57,7 +57,7 @@ abstract class parseable
                 if(method_exists($value,"__toString")) 
                     return $value = "{$value}";
                 else
-                    return $value = $this->parse_stdclass_value($this->get_object_vars($value));
+                    return $value = $this->parse_stdclass_value(get_object_vars($value));
             }
         } 
         elseif(is_array($value))
