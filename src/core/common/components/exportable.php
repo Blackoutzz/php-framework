@@ -7,7 +7,7 @@ abstract class exportable extends parseable
 
     public function __serialize()
     {
-        return $this->__toJson();
+        return $this->__toArray();
     }
 
     public function __unserialize($pdata)

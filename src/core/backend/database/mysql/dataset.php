@@ -16,7 +16,7 @@ use core\program;
 abstract class dataset extends database_dataset
 {
 
-    protected $id = NULL;
+    protected $id = 0;
 
     public function exist()
     {

@@ -64,7 +64,8 @@ abstract class database
 	
 	public function get_name()
 	{
-		return array_pop(explode('\\', get_class($this)));
+		$classname = explode('\\', get_class($this));
+		return array_pop($classname);
 	}
 
 }

@@ -7,12 +7,6 @@ class action extends dataset
 
     protected $name = "";
 
-    public  function __construct($pdata)
-    {
-        $this->table_name = "actions";
-        $this->parse_data($pdata);
-    }
-
     public  function save($pid = 0)
     {
         if($this->exist())

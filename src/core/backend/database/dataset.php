@@ -24,7 +24,8 @@ class dataset extends exportable
 
     public function __toString()
     {
-        return array_pop(explode("\\",get_class($this)));
+        $classname = explode("\\",get_class($this));
+        return array_pop($classname);
     }
 
     public function __get($pname)
