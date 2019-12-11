@@ -1,5 +1,6 @@
 <?php 
 namespace core\common\components;
+use core\common\exception;
 
 abstract class parseable
 {
@@ -117,30 +118,39 @@ abstract class parseable
 
     protected function parse_xml(&$xml)
     {
-        $structure = array();
-        if(is_string($xml))
+        try
         {
-            $doc = new \DOMDocument;
-            $doc->loadXML($xml);
-            $node_count = 0;
-            for($i=0;$i<$doc->childNodes->length;$i++)
+            $structure = array();
+            if(is_string($xml))
             {
-                $node = $doc->childNodes->item($i);
-                if($node->nodeType === 1)
+                $doc = new \DOMDocument;
+                if($doc->loadXML($xml))
                 {
-                    if(isset($structure[$node->nodeName]))
+                    $node_count = 0;
+                    for($i=0;$i<$doc->childNodes->length;$i++)
                     {
-                        $node_count++;
-                        $structure[$node->nodeName.$node_count] = $this->parse_xml_node($node);
-                    } else {
-                        $structure[$node->nodeName] = $this->parse_xml_node($node);
-                    } 
-                    
-                }
-                    
-            }
-        } 
-        return $xml = $structure;
+                        $node = $doc->childNodes->item($i);
+                        if($node->nodeType === 1)
+                        {
+                            if(isset($structure[$node->nodeName]))
+                            {
+                                $node_count++;
+                                $structure[$node->nodeName.$node_count] = $this->parse_xml_node($node);
+                            } else {
+                                $structure[$node->nodeName] = $this->parse_xml_node($node);
+                            } 
+                        } 
+                    }
+                } else {
+                    throw new exception("Impossible or incomplete xml file to parse");
+                 }
+            } 
+            return $xml = $structure;
+        }
+        catch(exception $e)
+        {
+            return false;
+        }
     }
 
     protected function parse_xml_node($pnode)
