@@ -180,7 +180,7 @@ abstract class parseable
                 for($i=0;$i<$pnode->childNodes->length;$i++)
                 {
                     $node = $pnode->childNodes->item($i);
-                    if($node->childNodes->length >= 1)
+                    if($node->hasChildNodes())
                     {
                         if($node->nodeName == "#text" && trim($node->nodeValue) == "")
                             continue;
