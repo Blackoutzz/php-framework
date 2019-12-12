@@ -7,7 +7,7 @@ class view extends dataset
 
     protected $name = "";
 
-    public  function save($pid = 0)
+    public function save($pid = 0)
     {
         if($this->exist())
         {
@@ -32,5 +32,21 @@ class view extends dataset
         $this->name = $this->get_sanitized_string($pname);
     }
 
+    protected function get_prefix()
+    {
+        switch(strtolower($_SERVER["REQUEST_METHOD"]))
+        {
+            case "get":
+                return "get_";
+            case "put": 
+                return "update_";
+            case "delete":
+                return "delete_";
+            case "post":
+                return "add_";
+            default:
+                return "get_";
+        }
+    }
 
 }

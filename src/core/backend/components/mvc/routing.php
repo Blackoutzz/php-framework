@@ -6,7 +6,6 @@ use core\backend\components\database;
 use core\backend\routing\request;
 use core\common\str;
 use core\common\time\date;
-use core\common\enum;
 use core\backend\components\filesystem\folder;
 use core\backend\components\filesystem\file;
 use core\backend\database\mysql\datasets\controller;
@@ -349,7 +348,7 @@ class routing
         {
             if($view_name = $this->parse_view_name($pview))
             {
-                if(($this->get_controller_type() === "api" && method_exists($this->parse_controller_namespace($this->controller->get_name()),$this->get_view_prefix().$view_name))
+                if((($this->get_controller_type() === "api" || $this->get_controller_type() === "ajax") && method_exists($this->parse_controller_namespace($this->controller->get_name()),$this->get_view_prefix().$view_name))
                 || method_exists($this->parse_controller_namespace($this->controller->get_name()),$view_name))
                 {
                     $this->view = new view(array("name"=>$view_name));
