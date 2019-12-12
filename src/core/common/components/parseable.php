@@ -224,12 +224,44 @@ abstract class parseable
 
     public function parse_csv($pcsv,$pdelimiter = ',')
     {
-        //TODO
+        try
+        {
+            $csv = new str($pcsv);
+            $csv_lines = $csv->get_lines();
+            $csv = array();
+            $csv_titles = $this->parse_csv_title($csv_lines[0]);
+            
+            for($i=1;$i<count($csv_lines);$i++)
+            {
+                $entry = $this->parse_csv_entry($csv_lines[$i]);
+                $stack = array();
+                foreach($csv_titles as $id => $title)
+                {
+                    $stack[$title] = $entry[$id]; 
+                }
+                $csv[] = $stack;
+            }
+            return $csv;
+        }
+        catch (exception $e)
+        {
+            return array();
+        }
+    }
+
+    protected function parse_csv_title($pentry,$pdelimiter = ',')
+    {
+        return explode($pdelimiter,$pentry);
     }
 
     protected function parse_csv_entry($pentry,$pdelimiter = ',')
     {
-        //TODO
+        $data = explode($pdelimiter,$pentry);
+        foreach($data as &$entry)
+        {
+            $entry = trim($entry,'"');
+        }
+        return $data;
     }
 
 }

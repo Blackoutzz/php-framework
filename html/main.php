@@ -19,7 +19,7 @@ class main extends program
         self::$path = "./";
         parent::__construct($pargv);
         $controller = self::$routing->get_controller_instance();
-        $controller->initialize();
+        $controller->initialize(); 
     }
 
 }
