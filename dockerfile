@@ -1,4 +1,4 @@
-FROM php:7.4.0-apache
+FROM php:apache
 RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -y openssl libssl-dev libcurl4-openssl-dev git

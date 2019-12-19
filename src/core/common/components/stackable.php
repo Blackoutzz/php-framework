@@ -1,7 +1,7 @@
 <?php
 namespace core\common\components;
 
-class stackable implements \Iterator , \ArrayAccess, \Countable
+class stackable extends exportable implements \Iterator , \ArrayAccess, \Countable
 {
 
     protected $array;
@@ -10,32 +10,35 @@ class stackable implements \Iterator , \ArrayAccess, \Countable
 
     public function __construct($parray = array())
     {
-        $this->array = $parray;
+        if(is_array($parray))
+            $this->array = $parray;
+        else
+            $this->array = array();
     }
 
     public function rewind()
     {
-        $this->position = 0;
+        return reset($this->array);
     }
 
     public function current()
     {
-        return $this->array[$this->position];
+        return current($this->array);
     }
 
     public function key()
     {
-        return $this->position;
+        return key($this->array);
     }
 
     public function next()
     {
-        ++$this->position;
+        return next($this->array);
     }
 
     public function valid()
     {
-        return isset($this->array[$this->position]);
+        return key($this->array) !== null;
     }
 
     public function offsetSet($offset, $value)
