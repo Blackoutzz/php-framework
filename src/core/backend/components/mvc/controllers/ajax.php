@@ -1,8 +1,9 @@
 <?php
 namespace core\backend\components\mvc\controllers;
-use core\backend\components\mvc\controller;
+use core\backend\components\mvc\controllers\rest;
 use core\backend\mvc\ajax\response;
 use core\backend\mvc\ajax\response_code;
+use core\common\exception;
 use core\common\conversions\json;
 use core\program;
 
@@ -16,28 +17,93 @@ use core\program;
  * @website https://Blackoutzz.me
  **/
 
-class ajax extends controller
+class ajax extends rest
 {
 
     public function initialize()
     {
         header("Content-Type: text/json");
-        if($this->has_access())
+        try
         {
             if($this->has_view())
             {
-                $result = $this->prepare_view();
-                $body = program::pull();
-                $response = new response(response_code::successful,$result,$body);
-                echo $response;
-                return true;
+                if($this->has_access())
+                {
+                    $response = new response($this->prepare_view());
+                    echo $response;
+                    program::end(response_code::successful);
+                } else {   
+                    throw new exception("Invalid api path",response_code::access_denied);
+                }
             } else {
-                echo json_encode(array("code"=>404,"ret"=>false,"body"=>"Invalid Ajax Action"));
+                throw new exception("Invalid api path",response_code::invalid_call);
             }
-        } else {
-            echo json_encode(array("code"=>403,"ret"=>false,"body"=>"Access Denied"));
+        } 
+        catch (exception $e)
+        {
+            switch($e->get_code())
+            {
+                case response_code::access_denied:
+                    $this->on_access_denied();
+                break;
+                case response_code::invalid_call:
+                    $this->on_invalid_call();
+                break;
+                case response_code::unexpected_error:
+                    $this->on_unexpected_call_error();
+                break;
+                default:
+                    $this->on_invalid_call();
+            }
         }
-        return false;
+            
+    }
+
+    protected function on_access_denied()
+    {
+        $response = new response(false);
+        echo $response;
+        program::end(response_code::access_denied);
+    }
+
+    protected function on_invalid_call()
+    {
+        $response = new response(false);
+        echo $response;
+        program::end(response_code::invalid_call);
+    }
+
+    protected function on_unexpected_call_error()
+    {
+        $response = new response(false);
+        echo $response;
+        program::end(response_code::unexpected_error);
+    }
+
+    protected function get_error($pcode,$pmsg)
+    {
+        return $this->on_error($pcode,$pmsg);
+    }
+
+    protected function add_error($pcode,$pmsg)
+    {
+        return $this->on_error($pcode,$pmsg);
+    }
+
+    protected function delete_error($pcode,$pmsg)
+    {
+        return $this->on_error($pcode,$pmsg);
+    }
+
+    protected function update_error($pcode,$pmsg)
+    {
+        return $this->on_error($pcode,$pmsg);
+    }
+
+    protected function on_error($pcode,$pmsg)
+    {
+        http_response_code(intval($pcode));
+        return $pmsg;
     }
 
     protected function is_login()

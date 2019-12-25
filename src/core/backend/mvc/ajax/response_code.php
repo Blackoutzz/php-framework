@@ -18,7 +18,7 @@ abstract class response_code
     
     const access_denied = 403;
     
-    const invalid_action = 404;
+    const invalid_call = 404;
     
     const unexpected_error = 500;
 

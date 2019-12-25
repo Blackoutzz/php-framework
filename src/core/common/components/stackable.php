@@ -6,8 +6,6 @@ class stackable extends exportable implements \Iterator , \ArrayAccess, \Countab
 
     protected $array;
 
-    protected $position = 0;
-
     public function __construct($parray = array())
     {
         if(is_array($parray))

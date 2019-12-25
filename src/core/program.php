@@ -59,6 +59,19 @@ abstract class program
         http_response_code(200);
     }
 
+    static public function end($pcode = 200)
+    {
+        http_response_code(intval($pcode));
+        self::push();
+        die();
+    }
+
+    static public function abort($pcode = 500)
+    {
+        http_response_code(intval($pcode));
+        die();
+    }
+
     static public function disconnect() : void
     {
         ignore_user_abort(true);

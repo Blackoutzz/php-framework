@@ -184,13 +184,13 @@ class routing
                 {
                     if(program::$users[0]->is_connected())
                     {
-                        if(method_exists($namespace,"dashboard"))
+                        if(method_exists($namespace,"dashboard") || method_exists($namespace,"get_dashboard"))
                         {
                             $this->view = new view(array("id"=>2,"name"=>"dashboard"));
                             $this->controller_view = new controller_view(array("id"=>2,"controller"=>1,"view"=>2));
                             return true;
                         } else {
-                            if(method_exists($namespace,"index"))
+                            if(method_exists($namespace,"index") || method_exists($namespace,"get_index"))
                             {
                                 $this->view = new view(array("id"=>1,"name"=>"index"));
                                 $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
@@ -199,7 +199,7 @@ class routing
                             throw new exception("Default {$type} view isn't created",404);
                         }
                     } else {
-                        if(method_exists($namespace,"index"))
+                        if(method_exists($namespace,"index") || method_exists($namespace,"get_index"))
                         {
                             $this->view = new view(array("id"=>1,"name"=>"index"));
                             $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
@@ -208,7 +208,7 @@ class routing
                         throw new exception("Default {$type} view isn't created",404);
                     }
                 } else {
-                    if(method_exists($namespace,"index"))
+                    if(method_exists($namespace,"index") || method_exists($namespace,"get_index"))
                     {
                         $this->view = new view(array("id"=>1,"name"=>"index"));
                         $this->controller_view = new controller_view(array("id"=>1,"controller"=>1,"view"=>1));
