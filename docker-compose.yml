@@ -10,4 +10,14 @@ services:
             - ./src/:/var/www/html/vendor/blackoutzz/framework/src/
             - ./html/controllers/:/var/www/html/controllers/
             - ./html/ui/:/var/www/html/ui/
+            - ./html/logs/apache/:/var/log/apache2/
+            - ./config/php/:/usr/local/etc/php/
+            - ./html/logs/sessions/:/tmp/php/sessions/
+        environment: 
+            - HASH_ALGO=SHA-512
+            - ADMIN_USERNAME=admin
+            - ADMIN_PASSWORD=admin
+            - ADMIN_EMAIL=admin@localhost
+            
+
 
