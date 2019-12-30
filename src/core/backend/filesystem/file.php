@@ -517,7 +517,7 @@ abstract class file
             $filepath = self::get_path($pfilepath);
             $new_filepath = self::get_path($pnew_filepath);
             $upload_dir = ini_get("upload_tmp_dir");
-            if(preg_match("~^{$upload_dir}.+$~im",$pfilepath)
+            if(preg_match("~^{$upload_dir}.+$~im",$pfilepath))
             {
                 return move_uploaded_file($pfilepath,$new_filepath);  
             }
