@@ -29,8 +29,12 @@ class ajax extends rest
             {
                 if($this->has_access())
                 {
-                    $response = new response($this->prepare_view());
-                    echo $response;
+                    $value = $this->prepare_view();
+                    if($value !== null)
+                    {
+                        $response = new response($value);
+                        echo $response;
+                    }
                     program::end(response_code::successful);
                 } else {   
                     throw new exception("Invalid api path",response_code::access_denied);
