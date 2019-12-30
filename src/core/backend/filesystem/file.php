@@ -516,9 +516,10 @@ abstract class file
         {
             $filepath = self::get_path($pfilepath);
             $new_filepath = self::get_path($pnew_filepath);
-            if(preg_match("~^/tmp/.+$~im",$filepath))
+            $upload_dir = ini_get("upload_tmp_dir");
+            if(preg_match("~^{$upload_dir}.+$~im",$pfilepath)
             {
-                return move_uploaded_file($filepath,$new_filepath);  
+                return move_uploaded_file($pfilepath,$new_filepath);  
             }
             elseif(self::exist($filepath))
             {
