@@ -807,9 +807,22 @@ abstract class file
         return 'Unkown';
     }
 
-    static function get_file_type()
+    static function get_type($pfilepath)
     {
-        //TODO
+        try
+        {
+            $filepath = self::get_path($pfilepath);
+            if(self::exist($filepath))
+            {
+                return filetype($filepath);
+            } else {
+                return false;
+            }
+        }
+        catch (exception $e) 
+        {
+            return false;
+        }
     }
 
     static function has_pattern($pfilepath,$pregex)

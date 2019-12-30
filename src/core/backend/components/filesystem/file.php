@@ -47,6 +47,11 @@ class file
         return static_file::get_name($this->filepath);
     }
 
+    public function get_type()
+    {
+        return static_file::get_type($this->filepath);
+    }
+
     public function get_folder()
     {
         return static_file::get_folder($this->filepath);
