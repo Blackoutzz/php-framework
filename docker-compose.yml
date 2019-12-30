@@ -4,6 +4,8 @@ services:
         build:
             context: .
             dockerfile: dockerfile
+        restart: always
+        network_mode: bridge
         ports:
             - 80:80
         volumes:
