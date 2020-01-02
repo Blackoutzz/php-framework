@@ -1,6 +1,6 @@
 <?php
 namespace core\frontend\html\elements;
-use core\frontend\html\element;
+use core\frontend\html\void_element;
 
 /**
  * HTML Element : img
@@ -14,7 +14,7 @@ use core\frontend\html\element;
  * @Website https://Blackoutzz.me
  **/
 
-class img extends element
+class img extends void_element
 {
 
     public function __construct($pattributes = array())

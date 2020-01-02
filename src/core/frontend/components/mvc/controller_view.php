@@ -3,6 +3,7 @@ namespace core\frontend\components\mvc;
 use core\frontend\components\template;
 use core\backend\components\file;
 use core\frontend\components\widget;
+use core\frontend\html\element;
 use core\common\exception;
 use core\program;
 
@@ -56,6 +57,27 @@ class controller_view extends template
         {
             return false;
         }
+    }
+
+    protected function get_html_element($pelement,$pinner_html = array(),$pattribute = array())
+    {
+        $element = (string) $pelement;
+        if(preg_match("~^[a-z\\\_]+$~im",$element))
+        {
+            $element_class = "core\\frontend\\html\\elements\\{$element}";
+            if(class_exists($element_class))
+            {
+                if(is_subclass_of($element_class,"element"))
+                {
+                    return new $element_class($pinner_html,$pattribute);
+                }
+                elseif(is_subclass_of($element_class,"void_element"))
+                {
+                    return new $element_class($pattribute);
+                }
+            }
+        }
+        return "";
     }
 
     protected function get_widget($pwidget,$pdata = array())
