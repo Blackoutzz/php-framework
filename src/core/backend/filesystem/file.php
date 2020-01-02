@@ -772,7 +772,10 @@ abstract class file
             return 'Exel/CSV';
         }
         //word
-        if($extension === "word")
+        if($extension === "word"
+        || $extension === "doc"
+        || $extension === "docx"
+        || $extension === "docm")
         {
             return 'Word/Text';
         }
