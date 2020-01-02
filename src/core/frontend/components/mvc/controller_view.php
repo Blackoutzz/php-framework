@@ -66,8 +66,8 @@ class controller_view extends template
             $widget_class = "core\\frontend\\components\\widgets\\{$widget}";
             if(class_exists($widget_class))
             {
-                $widget = new $widget_class($pdata);
-                if($widget instanceof widget) return $widget;
+                $widget_instance = new $widget_class($pdata);
+                if($widget_instance instanceof widget) return $widget_instance;
             }
         }
         return "";
