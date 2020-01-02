@@ -15,7 +15,7 @@ class widget extends dataset
 
     public function __toString()
     {
-        return $this->__toHtml();
+        return (string) $this->__toHtml();
     }
 
     public function __toHtml()
