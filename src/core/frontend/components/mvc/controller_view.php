@@ -67,11 +67,11 @@ class controller_view extends template
             $element_class = "core\\frontend\\html\\elements\\{$element}";
             if(class_exists($element_class))
             {
-                if(is_subclass_of($element_class,"element"))
+                if(is_subclass_of($element_class,"core\\frontend\\html\\element",true))
                 {
                     return new $element_class($pinner_html,$pattribute);
                 }
-                elseif(is_subclass_of($element_class,"void_element"))
+                elseif(is_subclass_of($element_class,"core\\frontend\\html\\void_element",true))
                 {
                     return new $element_class($pattribute);
                 }
