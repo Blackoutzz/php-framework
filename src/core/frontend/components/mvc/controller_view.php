@@ -67,7 +67,8 @@ class controller_view extends template
             if(class_exists($widget_class))
             {
                 $widget_instance = new $widget_class($pdata);
-                if($widget_instance instanceof widget) return $widget_instance;
+                if($widget_instance instanceof widget) 
+                    return $widget_instance;
             }
         }
         return "";
