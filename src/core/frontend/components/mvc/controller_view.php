@@ -2,6 +2,7 @@
 namespace core\frontend\components\mvc;
 use core\frontend\components\template;
 use core\backend\components\file;
+use core\frontend\components\widget;
 use core\common\exception;
 use core\program;
 
@@ -60,12 +61,13 @@ class controller_view extends template
     protected function get_widget($pwidget,$pdata = array())
     {
         $widget = (string) $pwidget;
-        if(preg_match("~^[a-z\\_]+$~im",$widget))
+        if(preg_match("~^[a-z\\\_]+$~im",$widget))
         {
             $widget_class = "core\\frontend\\components\\widgets\\{$widget}";
             if(class_exists($widget_class))
             {
-                return new $widget_class($pdata);
+                $widget = new $widget_class($pdata);
+                if($widget instanceof widget) return $widget;
             }
         }
         return "";
