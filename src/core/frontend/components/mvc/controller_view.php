@@ -59,7 +59,7 @@ class controller_view extends template
         }
     }
 
-    protected function get_html_element($pelement,$pinner_html = array(),$pattribute = array())
+    protected function get_html_element($pelement,$pattribute = array(),$pinner_html = array())
     {
         $element = (string) $pelement;
         if(preg_match("~^[a-z\\\_]+$~im",$element))
@@ -69,7 +69,7 @@ class controller_view extends template
             {
                 if(is_subclass_of($element_class,"core\\frontend\\html\\element",true))
                 {
-                    return new $element_class($pinner_html,$pattribute);
+                    return new $element_class($pattribute,$pinner_html);
                 }
                 elseif(is_subclass_of($element_class,"core\\frontend\\html\\void_element",true))
                 {

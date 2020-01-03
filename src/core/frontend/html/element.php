@@ -23,7 +23,7 @@ abstract class element extends node
 
     protected $inner_html = array();
 
-    public function __construct($ptag , $pinner_html = array() , $pattributes = array())
+    public function __construct($ptag , $pattributes = array(), $pinner_html = array())
     {
         $this->tag = $ptag;
         $this->parse_attributes($pattributes);

@@ -17,7 +17,7 @@ use core\frontend\html\element;
 class video extends element
 {
 
-    public function __construct($pinner_html = array(),$pattributes = array())
+    public function __construct($pattributes = array(),$pinner_html = array())
     {
         $this->tag = "video";
         $this->inner_html = $pinner_html;
