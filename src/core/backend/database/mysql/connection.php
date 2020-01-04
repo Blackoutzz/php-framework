@@ -78,14 +78,13 @@ class connection extends database_connection
             if($result = $this->handler->multi_query($queries))
             {
                 $output = new dataset_array();
-                while ($this->handler->next_result())
+                while($this->handler->next_result())
                 {
                     $output[] = $this->handler->use_result();
                 }
                 return $output;
             } 
             throw new exception($this->handler->error,$this->handler->errno);
-
         }
         catch (exception $e)
         {

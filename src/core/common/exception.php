@@ -34,8 +34,12 @@ class exception extends \Exception
         parent::__construct(str::sanitize($message),$code,$previous);
         self::$exceptions[] = $this;
         $this->date = time();
-        $this->log = new log("exceptions");
-        $this->save();
+        if(program::$debug == 1)
+        {
+            $this->log = new log("exceptions");
+            $this->save();
+        }
+        
     }
 
     protected function save()

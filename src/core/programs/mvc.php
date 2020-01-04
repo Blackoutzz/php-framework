@@ -30,12 +30,13 @@ abstract class mvc extends program
     {   
         try
         {
+            $this->runtime(self::$runtime);
             $this->configure($pargv);
             if($this->start_session())
             {
                 if(self::is_configured())
                 {
-                   phpinfo();
+                    phpinfo();
                 } 
                 die("Please rebuild the docker container");
             }
@@ -51,15 +52,10 @@ abstract class mvc extends program
         $config = new file(self::$path."config.php",false);
         return ($config->exist());
     }
-
-    static public function is_installed() : bool
-    {
-        return false;
-    }
     
     static public function get_option($poption)
     {
-        return self::$database->get_app_option_by_option($poption);
+        return self::$databases->get_mysql_database_by_id()->get_model()->get_app_option_by_option($poption);
     }
 
     static public function set_option($poption,$pvalue)
@@ -81,7 +77,7 @@ abstract class mvc extends program
             && isset($_SERVER["DATABASE_USER"])
             && isset($_SERVER["DATABASE_PASSWORD"]))
             {
-                sleep(15);
+                sleep(20);
                 if($this->configure_database()
                 && isset($_SERVER["ADMIN_USERNAME"]) 
                 && isset($_SERVER["ADMIN_PASSWORD"])
@@ -92,11 +88,14 @@ abstract class mvc extends program
                         $this->configure_user();
                         die();
                     }
+                    die("something happend rebuild the container");
                 }
             }
+            die("something is missing to fully configure the container");
         }
         else
         {
+            self::$debug = intval($this->is_configured());
             self::$databases = new databases();
             self::$databases[] = new mysql($pargv["db"]);
             self::$cryptography = new cryptography(["salt"=>$pargv["salt"],"algo"=>$pargv["algo"]]);

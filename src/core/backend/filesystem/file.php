@@ -931,4 +931,22 @@ abstract class file
         }
     }
 
+    static function is_empty($pfilepath)
+    {
+        try
+        {
+            $filepath = self::get_path($pfilepath);
+            if(self::exist($filepath))
+            {
+                return (strlen(file_get_contents($filepath)) == 0);
+            } else {
+                return false;
+            }
+        }
+        catch (exception $e) 
+        {
+            return false;
+        }
+    }
+
 }

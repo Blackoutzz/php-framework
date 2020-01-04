@@ -87,6 +87,11 @@ class file
         return static_file::is_hidden($this->filepath);
     }
 
+    public function is_empty()
+    {
+        return static_file::is_empty($this->filepath);
+    }
+
     public function get_permissions()
     {
         return static_file::get_permissions($this->filepath);

@@ -88,6 +88,7 @@ abstract class program
 
     static public function runtime($pruntime_type = runtime_type::dev) : void
     {
+        self::$debug = intval(self::is_configured());
         $local_core = new folder(self::$path."core",false);
         if($local_core->exist()) $local_core->import(true);
         ob_start();
@@ -170,6 +171,11 @@ abstract class program
         }
     }
     
+    static public function is_configured() : bool 
+    {
+        return false;
+    }
+
     static public function is_multi_threaded() : bool
     {
         return (class_exists("Thread"));
