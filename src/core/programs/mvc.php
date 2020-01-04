@@ -37,7 +37,7 @@ abstract class mvc extends program
                 {
                    phpinfo();
                 } 
-                die("Please recompose the docker");
+                die("Please rebuild the docker container");
             }
         }
         catch (exception $e)
