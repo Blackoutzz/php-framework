@@ -58,10 +58,27 @@ abstract class dataset extends database_dataset
         return array_pop(explode('\\', get_class($this)));
     }
 
-    public function database($pid = 0)
+    protected function database($pid = 0)
     {
         $id = intval($pid);
         return program::$databases->get_mysql_database_by_id($id);
     }
+
+    protected function execute_prepared_select_query($pquery,$pparam_types = false,$pparams = false,$pid = 0)
+    {
+        $this->database($pid)->get_connection()->get_prepared_select_query($pquery,$pparam_types,$pparams);
+    }
+
+    protected function execute_prepared_insert_query($pquery,$pparam_types = false,$pparams = false,$pid = 0)
+    {
+        $this->database($pid)->get_connection()->get_prepared_insert_query($pquery,$pparam_types,$pparams);
+        $this->id = $this->database($pid)->get_connection()->get_last_id();
+    }
+
+    protected function execute_prepared_update_query($pquery,$pparam_types = false,$pparams = false,$pid = 0)
+    {
+        $this->database($pid)->get_connection()->get_prepared_update_query($pquery,$pparam_types,$pparams);
+    }
+
 
 }

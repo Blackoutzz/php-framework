@@ -1,6 +1,6 @@
 <?php
 namespace framework;
-use core\program;
+use core\programs\mvc;
 
 /**
  * Main
@@ -11,15 +11,13 @@ use core\program;
  * @author Mickael Nadeau
  **/
 
-class main extends program
+class main extends mvc
 {
 
     public function __construct($pargv = array())
     {
         self::$path = "./";
         parent::__construct($pargv);
-        $controller = self::$routing->get_controller_instance();
-        $controller->initialize(); 
     }
 
 }

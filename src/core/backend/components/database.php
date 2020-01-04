@@ -25,7 +25,7 @@ abstract class database
 		
 	}
 
-	protected function get_connection()
+	public function get_connection()
 	{
 		return $this->connection;
 	}

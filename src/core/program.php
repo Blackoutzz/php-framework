@@ -82,9 +82,7 @@ abstract class program
         $length = $last_buffer ? ob_get_length() : 0;
         header("Content-Length: {$length}");
         header('Connection: close');
-        if ($last_buffer) {
-            ob_end_flush();
-        }
+        if ($last_buffer) ob_end_flush();
         flush();
     }
 
@@ -179,7 +177,7 @@ abstract class program
 
     static public function is_using_console() : bool
     {
-        return (php_sapi_name() == 'cli' );
+        return (php_sapi_name() === 'cli' && isset($_SERVER["argv"]));
     }
 
     static public function is_using_xdebug() : bool

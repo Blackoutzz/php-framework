@@ -2,6 +2,7 @@
 namespace core\backend\database\mysql\datasets;
 use core\backend\database\mysql\dataset;
 use core\backend\database\mysql\model;
+use core\program;
 
 class user extends dataset
 {
@@ -22,11 +23,10 @@ class user extends dataset
     {
         if($this->exist())
         {
-            return $this->update_prepared_request("UPDATE `users` SET name=? , password=? , email=? , group=? , state=? WHERE id=?","sssiii",array($this->name,$this->password,$this->email,$this->group,$this->state,$this->id));
+            return $this->execute_prepared_update_query("UPDATE `users` SET name=? , password=? , email=? , group=? , state=? WHERE id=?","sssiii",array($this->name,$this->password,$this->email,$this->group,$this->state,$this->id),$pid);
         } else {
-            if($this->insert_prepared_request("INSERT INTO `users` (`name`,`password`,`email`,`group`,`state`) VALUES (?,?,?,?,?)","sssii",array($this->name,$this->password,$this->email,$this->group,$this->state)))
+            if($this->execute_prepared_insert_query("INSERT INTO `users` (`name`,`password`,`email`,`group`,`state`) VALUES (?,?,?,?,?)","sssii",array($this->name,$this->password,$this->email,$this->group,$this->state),$pid))
             {
-                $this->id = $this->get_last_id();
                 return true;
             }
             return false;
@@ -50,7 +50,7 @@ class user extends dataset
 
     public  function set_password($ppassword)
     {
-        $this->password = main::$cryptography->hash($ppassword);
+        $this->password = program::$cryptography->hash($ppassword);
     }
 
     public  function get_email()

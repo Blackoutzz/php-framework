@@ -1,4 +1,5 @@
 <?php
 require('vendor/autoload.php');
 require('main.php');
-$main = new framework\main();
+if(isset($db) && isset($salt) && isset($algo)) $argv = [];
+$main = new framework\main($argv);

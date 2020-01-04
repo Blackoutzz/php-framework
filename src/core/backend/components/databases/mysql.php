@@ -23,7 +23,6 @@ class mysql extends database
     {
         if(isset($pconfig["host"]) && isset($pconfig["port"]) && isset($pconfig["username"]) && isset($pconfig["password"]) && isset($pconfig["db"]))
         {
-            $this->name = $pconfig["db"];
             $this->connection = new connection($pconfig["host"],$pconfig["port"],$pconfig["username"],$pconfig["password"],$pconfig["db"]);
             $this->model = new model($this->connection);
         }

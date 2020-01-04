@@ -2,9 +2,12 @@
 namespace core\backend\database\mysql;
 use core\common\exception;
 use core\common\str;
+use core\backend\components\filesystem\file;
 use core\backend\database\connection as database_connection;
-use core\backend\database\dataset_array;
+use core\backend\database\mysql\dataset_array;
 use core\backend\database\mysql\dataset;
+use \mysqli;
+use core\program;
 
 /**
  * Dataset Array
@@ -23,12 +26,18 @@ class connection extends database_connection
 
     public function __construct($phost = 'localhost',$pport = 3306,$puser = 'root',$ppassword = 'admin',$pdb = 'app')
     {
-        parent::__construct($pport,$ppassword);
+        parent::__construct($phost,$pport);
+        $this->connect($puser,$ppassword,$pdb);
+    }
+
+    public function get_last_id()
+    {
+        return $this->last_id;
     }
 
     public function connect($puser,$ppassword,$pdb)
     {
-        $this->handler = new \mysqli($this->host,$puser,$ppassword,$pdb,$this->port);
+        $this->handler = new mysqli($this->host,$puser,$ppassword,$pdb,$this->port);
         if($this->handler->connect_errno > 0 && $this->handler->connect_error != NULL) throw new exception(str::get_utf8($this->handler->connect_error),$this->handler->connect_errno);
         if(isset($this->handler->errno) > 0 && $this->handler->error != NULL) throw new exception(str::get_utf8($this->handler->error),$this->handler->errno);
     }
@@ -66,23 +75,17 @@ class connection extends database_connection
     {
         try
         {
-            $result = $this->handler->multi_query($queries);
-            if($result)
+            if($result = $this->handler->multi_query($queries))
             {
-                if(is_object($result))
+                $output = new dataset_array();
+                while ($this->handler->next_result())
                 {
-                    $output = new dataset_array();
-                    while ($row = $result->fetch_assoc())
-                    {
-                        $output[] = $row;
-                    }
-                    return $output;
+                    $output[] = $this->handler->use_result();
                 }
-                if($result === true) return true;
-                throw new exception($this->handler->error,$this->handler->errno);
-            } else {
-                throw new exception($this->handler->error,$this->handler->errno);
-            }
+                return $output;
+            } 
+            throw new exception($this->handler->error,$this->handler->errno);
+
         }
         catch (exception $e)
         {
@@ -152,7 +155,7 @@ class connection extends database_connection
     {
         try
         {
-            if(!is_null($this->mysqli)) $prepared = $this->mysqli->prepare($request);
+            if(!is_null($this->handler)) $prepared = $this->handler->prepare($request);
             else $prepared = false;
             if(!$prepared) throw new exception("Impossible to prepare SQL request : {$request}");
             if($pparams !== false && is_array($pparams) && is_string($param_types))
@@ -178,6 +181,7 @@ class connection extends database_connection
         }
         catch (exception $e)
         {
+            var_dump($this->handler);
             return false;
         }
     }
@@ -186,7 +190,7 @@ class connection extends database_connection
     {
         try
         {
-            if(!is_null($this->mysqli)) $prepared = $this->mysqli->prepare($request);
+            if(!is_null($this->handler)) $prepared = $this->handler->prepare($request);
             else $prepared = false;
             if(!$prepared) throw new exception("Impossible to prepare SQL request : {$request}");
             if($pparams !== false && is_array($pparams) && is_string($param_types))
@@ -220,12 +224,12 @@ class connection extends database_connection
         }
     }
 
-    public function execute_script($pname)
+    public function execute_script($pfilepath)
     {
-        $script = new file("./app/db/scripts/{$pname}.sql",false);
-        if($script->exist())
+        $script = new file(program::$path.$pfilepath,false);
+        if($script->exist() && $script->get_extension() === "sql")
         {
-            return $this->gets($script->get_contents());
+            return $this->get_multiple_select_queries($script->get_contents());
         }
         return false;
     }
